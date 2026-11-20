@@ -50,15 +50,15 @@
                 <ul class="footer-contact">
                     <li>
                         <i class="fas fa-map-marker-alt"></i>
-                        <span>Jl. Kusantara Raya No. 45, Bandung, Jawa Barat</span>
+                        <span>Jl. ciwastra, Bandung, Jawa Barat</span>
                     </li>
                     <li>
                         <i class="fas fa-phone-alt"></i>
-                        <span>+62 812-3456-7890</span>
+                        <span>089697197026</span>
                     </li>
                     <li>
                         <i class="fas fa-envelope"></i>
-                        <span>halo@kusantarakita.co.id</span>
+                        <span>kusantaraPT@gmail.com</span>
                     </li>
                     <li>
                         <i class="fas fa-clock"></i>

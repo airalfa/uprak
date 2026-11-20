@@ -134,10 +134,17 @@
                         'sate ayam madura'       => 'sate ayam madura.jpg',
                         'rendang daging sapi'    => 'rendang daging sapi.jpg',
                         'es teh manis nusantara' => 'es teh manis nusantara.jpg',
-                        'es cendol dawet'        => 'Es Dawet.jpg',
+                        'es cendol dawet'        => 'es cendol dawet.jpg',
                         'wedang jahe hangat'     => 'wedang jahe hangat.jpg',
                     ];
                     $namaFile = $fotoMenu[strtolower(trim($menu->name))] ?? null;
+
+                    // Posisi crop gambar. 'object-top' = bagian atas foto ditampilkan.
+                    // Ubah ke 'object-center' (tengah) atau 'object-bottom' (bawah) bila perlu.
+                    $posisiFoto = [
+                        'es cendol dawet' => 'object-[center_65%]',
+                    ];
+                    $posisi = $posisiFoto[strtolower(trim($menu->name))] ?? 'object-center';
 
                     if ($namaFile) {
                         $img = asset('images/' . rawurlencode($namaFile));
@@ -154,7 +161,7 @@
                     <div>
                         <!-- Foto Menu & Badge Kategori -->
                         <div class="relative h-36 bg-gray-200">
-                            <img src="{{ $img }}" alt="{{ $menu->name }}" loading="lazy" class="w-full h-full object-cover">
+                            <img src="{{ $img }}" alt="{{ $menu->name }}" loading="lazy" class="w-full h-full object-cover {{ $posisi }}">
                             <span class="absolute top-2.5 right-2.5 bg-[#2E5A44] text-white text-[10px] font-semibold px-2.5 py-0.5 rounded-full shadow">
                                 {{ $menu->category }}
                             </span>

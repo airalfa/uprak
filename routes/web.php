@@ -4,6 +4,7 @@
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
+use App\Http\Controllers\CartController;
 
 Route::get('/', function () {
     return view('dashboard');
@@ -21,4 +22,5 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 Route::get('/katalog', [MenuController::class, 'index'])->name('katalog.index');
+Route::resource('cart', CartController::class)->only(['index', 'store', 'update', 'destroy']);
 require __DIR__.'/auth.php';

@@ -51,7 +51,9 @@
                     <svg class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="M3 3h2.2l.5 2H21l-2.2 8.2a2 2 0 01-1.9 1.5H8.4L8.8 16H19v2H7.2L5 5H3V3zm5.5 16a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm9 0a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/>
                     </svg>
-                    <span class="absolute -top-1.5 -right-2 bg-[#C8A252] text-[#132238] text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                    <span class="absolute -top-1.5 -right-2 bg-[#C8A252] text-[#132238] text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+                        {{ array_sum(array_column(session('cart', []), 'qty')) }}
+                    </span>
                 </a>
                 <a href="/login" class="bg-[#C8A252] hover:bg-[#b58e3e] text-[#132238] font-bold text-sm px-5 py-1.5 rounded-lg transition">
                     Login
@@ -76,6 +78,14 @@
 
     <!-- KONTEN UTAMA: KATALOG MENU -->
     <main class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-10 flex-grow">
+
+        <!-- Notifikasi saat menu berhasil masuk keranjang -->
+        @if(session('success'))
+            <div class="mb-6 bg-[#2E5A44] text-white px-4 py-3 rounded-xl shadow flex items-center justify-between text-sm">
+                <span>✔ {{ session('success') }}</span>
+                <a href="/checkout" class="underline font-semibold text-[#E5C17B] hover:text-white">Lihat Keranjang →</a>
+            </div>
+        @endif
 
         <!-- Header Katalog, Search Bar & Filter Kategori -->
         <div class="max-w-3xl space-y-4">
@@ -127,8 +137,6 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 mt-8">
             @forelse ($menus as $menu)
                 @php
-                    // Gambar dicocokkan otomatis dari NAMA menu ke file di public/images
-                    // (jadi tidak perlu mengubah database).
                     $fotoMenu = [
                         'nasi liwet komplit'     => 'nasi liwet.jpg',
                         'sate ayam madura'       => 'sate ayam madura.jpg',
@@ -139,8 +147,6 @@
                     ];
                     $namaFile = $fotoMenu[strtolower(trim($menu->name))] ?? null;
 
-                    // Posisi crop gambar. 'object-top' = bagian atas foto ditampilkan.
-                    // Ubah ke 'object-center' (tengah) atau 'object-bottom' (bawah) bila perlu.
                     $posisiFoto = [
                         'es cendol dawet' => 'object-[center_65%]',
                     ];
@@ -149,13 +155,15 @@
                     if ($namaFile) {
                         $img = asset('images/' . rawurlencode($namaFile));
                     } elseif (!empty($menu->image)) {
-                        // Menu baru: pakai isi kolom image (URL penuh atau path di public)
                         $img = \Illuminate\Support\Str::startsWith($menu->image, ['http://', 'https://', '/'])
                             ? $menu->image
                             : asset($menu->image);
                     } else {
                         $img = asset('images/background.jpg');
                     }
+
+                    // Cek apakah menu ini sudah ada di keranjang
+                    $qtyDiCart = session('cart')[$menu->id]['qty'] ?? 0;
                 @endphp
                 <div class="bg-[#FCF9F4] border border-[#E2D9C8] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
                     <div>
@@ -177,13 +185,37 @@
                         </div>
                     </div>
 
-                    <!-- Footer Kartu -->
-                    <div class="px-4 pb-3 pt-2 border-t border-[#F0E9DC] flex items-center justify-between">
-                        <span class="text-[11px] text-emerald-700 font-medium">✔ Tersedia</span>
-                        <a href="/checkout" class="bg-[#EAE2D6] hover:bg-[#C8A252] text-[#132238] hover:text-white text-xs font-semibold px-3 py-1 rounded-lg transition">
-                            Pesan
-                        </a>
-                    </div>
+                    <!-- Footer Kartu: Status Keranjang, Atur Jumlah (- / +) & Masuk ke Keranjang -->
+                    <form action="{{ route('cart.store') }}" method="POST" class="px-3 pb-3 pt-2.5 border-t border-[#F0E9DC] space-y-2">
+                        @csrf
+                        <input type="hidden" name="menu_id" value="{{ $menu->id }}">
+
+                        <div class="flex items-center justify-between">
+                            @if($qtyDiCart > 0)
+                                <span class="text-[11px] text-[#9A7428] font-bold">🛒 Di keranjang: {{ $qtyDiCart }}</span>
+                            @else
+                                <span class="text-[11px] text-emerald-700 font-medium">✔ Tersedia</span>
+                            @endif
+                            
+                            <!-- Kontrol Ikon Kurang & Tambah -->
+                            <div class="flex items-center border border-[#D8CFC2] rounded-lg bg-white overflow-hidden">
+                                <button type="button" onclick="ubahQty({{ $menu->id }}, -1)"
+                                        class="px-2 py-0.5 text-xs font-bold text-[#132238] hover:bg-[#EAE2D6] transition">
+                                    −
+                                </button>
+                                <input type="number" id="qty-{{ $menu->id }}" name="qty" value="1" min="1" readonly
+                                       class="w-7 text-center text-xs font-bold text-[#132238] focus:outline-none bg-transparent">
+                                <button type="button" onclick="ubahQty({{ $menu->id }}, 1)"
+                                        class="px-2 py-0.5 text-xs font-bold text-[#132238] hover:bg-[#EAE2D6] transition">
+                                    +
+                                </button>
+                            </div>
+                        </div>
+
+                        <button type="submit" class="w-full bg-[#132238] hover:bg-[#C8A252] text-white hover:text-[#132238] text-xs font-semibold py-1.5 rounded-lg transition flex items-center justify-center gap-1">
+                            <span>+ Keranjang</span>
+                        </button>
+                    </form>
                 </div>
             @empty
                 <div class="col-span-full text-center py-12 bg-[#FCF9F4] rounded-2xl border border-[#E2D9C8]">
@@ -208,6 +240,14 @@
             m.classList.toggle('hidden');
             m.classList.toggle('flex');
         });
+
+        function ubahQty(id, delta) {
+            const input = document.getElementById('qty-' + id);
+            let nilaiSekarang = parseInt(input.value) || 1;
+            let nilaiBaru = nilaiSekarang + delta;
+            if (nilaiBaru < 1) nilaiBaru = 1;
+            input.value = nilaiBaru;
+        }
     </script>
 
 </body>

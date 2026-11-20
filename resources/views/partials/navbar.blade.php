@@ -10,7 +10,7 @@
 
         <!-- Menu Links -->
         <ul class="nav-links" id="navLinks">
-            <li><a href="#beranda" class="active">Beranda</a></li>
+            <li><a href="/" class="active">Beranda</a></li>
             <li><a href="/katalog">Katalog</a></li>
             <li><a href="#bukti-beriman">Bukti Beriman</a></li>
             <li><a href="#blog">Blog <span class="badge-new">Baru</span></a></li>

@@ -10,9 +10,22 @@ class MenuController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $menus = Menu::all();
+        $query = Menu::query();
+
+        // Filter kategori (Makanan / Minuman / Paket Katering)
+        if ($request->filled('category') && $request->category !== 'Semua') {
+            $query->where('category', $request->category);
+        }
+
+        // Pencarian nama menu
+        if ($request->filled('search')) {
+            $query->where('name', 'like', '%' . $request->search . '%');
+        }
+
+        $menus = $query->get();
+
         return view('katalog', compact('menus'));
     }
 

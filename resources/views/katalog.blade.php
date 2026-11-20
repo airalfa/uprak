@@ -127,16 +127,41 @@
         <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-5 mt-8">
             @forelse ($menus as $menu)
                 @php
-                    // Mendukung URL penuh (http...) maupun path file di folder public (mis. images/menu/nasi-liwet.jpg)
-                    $img = \Illuminate\Support\Str::startsWith($menu->image, ['http://', 'https://', '/'])
-                        ? $menu->image
-                        : asset($menu->image);
+                    // Gambar dicocokkan otomatis dari NAMA menu ke file di public/images
+                    // (jadi tidak perlu mengubah database).
+                    $fotoMenu = [
+                        'nasi liwet komplit'     => 'nasi liwet.jpg',
+                        'sate ayam madura'       => 'sate ayam madura.jpg',
+                        'rendang daging sapi'    => 'rendang daging sapi.jpg',
+                        'es teh manis nusantara' => 'es teh manis nusantara.jpg',
+                        'es cendol dawet'        => 'es cendol dawet.jpg',
+                        'wedang jahe hangat'     => 'wedang jahe hangat.jpg',
+                    ];
+                    $namaFile = $fotoMenu[strtolower(trim($menu->name))] ?? null;
+
+                    // Posisi crop gambar. 'object-top' = bagian atas foto ditampilkan.
+                    // Ubah ke 'object-center' (tengah) atau 'object-bottom' (bawah) bila perlu.
+                    $posisiFoto = [
+                        'es cendol dawet' => 'object-[center_65%]',
+                    ];
+                    $posisi = $posisiFoto[strtolower(trim($menu->name))] ?? 'object-center';
+
+                    if ($namaFile) {
+                        $img = asset('images/' . rawurlencode($namaFile));
+                    } elseif (!empty($menu->image)) {
+                        // Menu baru: pakai isi kolom image (URL penuh atau path di public)
+                        $img = \Illuminate\Support\Str::startsWith($menu->image, ['http://', 'https://', '/'])
+                            ? $menu->image
+                            : asset($menu->image);
+                    } else {
+                        $img = asset('images/background.jpg');
+                    }
                 @endphp
                 <div class="bg-[#FCF9F4] border border-[#E2D9C8] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
                     <div>
                         <!-- Foto Menu & Badge Kategori -->
                         <div class="relative h-36 bg-gray-200">
-                            <img src="{{ $img }}" alt="{{ $menu->name }}" loading="lazy" class="w-full h-full object-cover">
+                            <img src="{{ $img }}" alt="{{ $menu->name }}" loading="lazy" class="w-full h-full object-cover {{ $posisi }}">
                             <span class="absolute top-2.5 right-2.5 bg-[#2E5A44] text-white text-[10px] font-semibold px-2.5 py-0.5 rounded-full shadow">
                                 {{ $menu->category }}
                             </span>

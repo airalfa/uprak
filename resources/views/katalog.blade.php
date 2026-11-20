@@ -13,28 +13,28 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-    <!-- NAVBAR (disamakan dengan halaman Beranda/Dashboard) -->
+    <!-- NAVBAR (ukuran disamakan dengan halaman Beranda) -->
     <header class="bg-[#132238] text-white sticky top-0 z-50 shadow-md">
-        <div class="w-full px-5 sm:px-8 lg:px-14 h-20 lg:h-24 flex items-center justify-between">
+        <div class="w-full px-5 sm:px-7 lg:px-9 h-16 flex items-center justify-between">
 
             <!-- Logo -->
-            <a href="/" class="flex items-center gap-3">
-                <span class="w-11 h-11 rounded-full bg-[#C8A252] flex items-center justify-center">
-                    <svg class="w-6 h-6 text-[#132238]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+            <a href="/" class="flex items-center gap-2.5">
+                <span class="w-9 h-9 rounded-full bg-[#C8A252] flex items-center justify-center">
+                    <svg class="w-5 h-5 text-[#132238]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="M3 8l4.5 4L12 5l4.5 7L21 8l-2 11H5L3 8z"/>
                     </svg>
                 </span>
-                <span class="font-serif-title text-2xl font-bold text-[#E5C17B]">PT. Kusantara</span>
+                <span class="font-serif-title text-[22px] font-bold text-[#E5C17B]">PT. Kusantara</span>
             </a>
 
             <!-- Menu -->
-            <nav class="hidden lg:flex items-center gap-9 text-[17px] font-medium">
+            <nav class="hidden lg:flex items-center gap-[26px] text-[15px] font-medium">
                 <a href="/" class="py-1 hover:text-[#E5C17B] transition {{ request()->is('/') ? 'text-[#E5C17B] border-b-2 border-[#E5C17B]' : '' }}">Beranda</a>
                 <a href="{{ route('katalog.index') }}" class="py-1 hover:text-[#E5C17B] transition {{ request()->is('katalog*') ? 'text-[#E5C17B] border-b-2 border-[#E5C17B]' : '' }}">Katalog</a>
                 <a href="/bukti-beriman" class="py-1 hover:text-[#E5C17B] transition {{ request()->is('bukti-beriman*') ? 'text-[#E5C17B] border-b-2 border-[#E5C17B]' : '' }}">Bukti Beriman</a>
                 <a href="/blog" class="py-1 flex items-center gap-1.5 hover:text-[#E5C17B] transition {{ request()->is('blog*') ? 'text-[#E5C17B] border-b-2 border-[#E5C17B]' : '' }}">
                     Blog
-                    <span class="bg-[#C8A252] text-[#132238] text-[11px] font-bold px-2 py-0.5 rounded-full">Baru</span>
+                    <span class="bg-[#C8A252] text-[#132238] text-[10px] font-bold px-2 py-0.5 rounded-full">Baru</span>
                 </a>
                 <a href="/tentang-kami" class="py-1 hover:text-[#E5C17B] transition {{ request()->is('tentang-kami*') ? 'text-[#E5C17B] border-b-2 border-[#E5C17B]' : '' }}">Tentang Kami</a>
                 <a href="/kontak" class="py-1 hover:text-[#E5C17B] transition {{ request()->is('kontak*') ? 'text-[#E5C17B] border-b-2 border-[#E5C17B]' : '' }}">Kontak</a>
@@ -43,22 +43,22 @@
             <!-- Kanan: cari, keranjang, login -->
             <div class="flex items-center gap-5">
                 <a href="{{ route('katalog.index') }}" aria-label="Cari" class="hover:text-[#E5C17B] transition">
-                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
+                    <svg class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true">
                         <circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/>
                     </svg>
                 </a>
                 <a href="/checkout" aria-label="Keranjang" class="relative hover:text-[#E5C17B] transition">
-                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <svg class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="M3 3h2.2l.5 2H21l-2.2 8.2a2 2 0 01-1.9 1.5H8.4L8.8 16H19v2H7.2L5 5H3V3zm5.5 16a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm9 0a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/>
                     </svg>
-                    <span class="absolute -top-2 -right-2.5 bg-[#C8A252] text-[#132238] text-[11px] font-bold w-5 h-5 rounded-full flex items-center justify-center">0</span>
+                    <span class="absolute -top-1.5 -right-2 bg-[#C8A252] text-[#132238] text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
                 </a>
-                <a href="/login" class="bg-[#C8A252] hover:bg-[#b58e3e] text-[#132238] font-bold text-base px-6 py-2.5 rounded-lg transition">
+                <a href="/login" class="bg-[#C8A252] hover:bg-[#b58e3e] text-[#132238] font-bold text-sm px-5 py-1.5 rounded-lg transition">
                     Login
                 </a>
                 <!-- Tombol menu mobile -->
                 <button id="menu-toggle" class="lg:hidden" aria-label="Buka menu">
-                    <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
+                    <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
                 </button>
             </div>
         </div>

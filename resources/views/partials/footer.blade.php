@@ -25,7 +25,7 @@
                 <h4 class="footer-heading">Navigasi</h4>
                 <ul class="footer-links">
                     <li><a href="#beranda">Beranda</a></li>
-                    <li><a href="#katalog">Katalog Menu</a></li>
+                    <li><a href="/katalog">Katalog Menu</a></li>
                     <li><a href="#bukti-beriman">Modul Bukti Beriman</a></li>
                     <li><a href="#blog">Blog & Sejarah</a></li>
                     <li><a href="#tentang">Tentang Kami</a></li>
@@ -36,11 +36,11 @@
             <div class="footer-col">
                 <h4 class="footer-heading">Layanan</h4>
                 <ul class="footer-links">
-                    <li><a href="#katalog">Dine-In & Reservasi</a></li>
-                    <li><a href="#katalog">Takeaway Express</a></li>
-                    <li><a href="#katalog">Delivery Nusantara</a></li>
-                    <li><a href="#katalog">Catering Acara & Kantor</a></li>
-                    <li><a href="#katalog">Kemitraan Franchise</a></li>
+                    <li><a href="/katalog">Dine-In & Reservasi</a></li>
+                    <li><a href="/katalog">Takeaway Express</a></li>
+                    <li><a href="/katalog">Delivery Nusantara</a></li>
+                    <li><a href="/katalog">Catering Acara & Kantor</a></li>
+                    <li><a href="/katalog">Kemitraan Franchise</a></li>
                 </ul>
             </div>
 

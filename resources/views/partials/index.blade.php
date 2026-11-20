@@ -16,7 +16,7 @@
                     Nikmati kelezatan kuliner autentik Indonesia dengan kualitas terbaik dan cita rasa warisan dari PT. Kusantara.
                 </p>
                 <div class="hero-buttons">
-                    <a href="#katalog" class="btn-pesan">
+                    <a href="/katalog" class="btn-pesan">
                         Pesan Sekarang <i class="fas fa-chevron-right"></i>
                     </a>
                 </div>

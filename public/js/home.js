@@ -1,79 +1,49 @@
+document.addEventListener('DOMContentLoaded', () => {
+    // Toggle Dropdown Login
+    const loginBtn = document.getElementById('loginDropdownBtn');
+    const loginDropdown = document.getElementById('loginDropdown');
 
-// MOBILE MENU
-document.addEventListener('DOMContentLoaded', function () {
-    const menuButton = document.querySelector('.mobile-menu');
-    const menu = document.querySelector('.main-nav');
-
-    if (menuButton && menu) {
-        menuButton.addEventListener('click', function () {
-            const isOpen = menu.classList.toggle('active');
-
-            menuButton.setAttribute('aria-expanded', isOpen);
-            menuButton.innerHTML = isOpen
-                ? '<i class="bi bi-x-lg"></i>'
-                : '<i class="bi bi-list"></i>';
+    if (loginBtn && loginDropdown) {
+        loginBtn.addEventListener('click', (e) => {
+            e.stopPropagation();
+            loginDropdown.classList.toggle('show');
         });
-    }
-});
 
-// CART
-let cartCount = 0;
-
-function updateCart() {
-    const smallCount = document.getElementById('cartCount');
-    const largeCount = document.getElementById('cartCountLarge');
-
-    if (smallCount) smallCount.textContent = cartCount;
-    if (largeCount) largeCount.textContent = cartCount;
-}
-
-// TOAST
-function showCartToast(message) {
-    const toast = document.getElementById('cartToast');
-
-    if (!toast) return;
-
-    toast.innerHTML =
-        '<i class="bi bi-cart-check"></i> ' + message;
-
-    toast.classList.add('show');
-
-    clearTimeout(window.toastTimer);
-
-    window.toastTimer = setTimeout(function () {
-        toast.classList.remove('show');
-    }, 2500);
-}
-
-// OPEN CART
-function openCart() {
-    showCartToast('Keranjang belanja dibuka. Total: ' + cartCount + ' item.');
-}
-
-// SEARCH
-document.addEventListener('DOMContentLoaded', function () {
-    const searchForm = document.getElementById('globalSearch');
-
-    if (searchForm) {
-        searchForm.addEventListener('submit', function (event) {
-            event.preventDefault();
-
-            const input = document.getElementById('searchInput');
-            const keyword = input.value.trim();
-
-            if (!keyword) {
-                showCartToast('Masukkan kata pencarian terlebih dahulu.');
-                return;
+        document.addEventListener('click', (e) => {
+            if (!loginDropdown.contains(e.target) && e.target !== loginBtn) {
+                loginDropdown.classList.remove('show');
             }
+        });
+    }
 
-            showCartToast('Pencarian: ' + keyword);
+    // Toggle Pencarian Global
+    const searchToggle = document.getElementById('searchToggle');
+    const globalSearchBar = document.getElementById('globalSearchBar');
+    const closeSearch = document.getElementById('closeSearch');
+
+    if (searchToggle && globalSearchBar) {
+        searchToggle.addEventListener('click', () => {
+            globalSearchBar.classList.toggle('show');
+            const input = globalSearchBar.querySelector('input');
+            if (globalSearchBar.classList.contains('show') && input) {
+                input.focus();
+            }
+        });
+    }
+
+    if (closeSearch && globalSearchBar) {
+        closeSearch.addEventListener('click', () => {
+            globalSearchBar.classList.remove('show');
+        });
+    }
+
+    // Toggle Menu Mobile
+    const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const navLinks = document.getElementById('navLinks');
+
+    if (mobileMenuBtn && navLinks) {
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
         });
     }
 });
-
-// ADD TO CART
-function addToCart() {
-    cartCount++;
-    updateCart();
-    showCartToast('Produk berhasil ditambahkan!');
-}

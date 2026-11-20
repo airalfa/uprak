@@ -1,31 +1,61 @@
+<nav class="kusantara-navbar">
+    <div class="nav-container">
+        <!-- Brand Logo -->
+        <a href="/" class="nav-brand">
+            <div class="brand-logo-icon">
+                <i class="fas fa-crown"></i>
+            </div>
+            <span class="brand-text">PT. Kusantara</span>
+        </a>
 
-<header class="site-header">
-    <a class="brand" href="/dashboard">
-        <span class="brand-emblem">♛</span>
-        <span>PT. Kusantara</span>
-    </a>
+        <!-- Menu Links -->
+        <ul class="nav-links" id="navLinks">
+            <li><a href="#beranda" class="active">Beranda</a></li>
+            <li><a href="#katalog">Katalog</a></li>
+            <li><a href="#bukti-beriman">Bukti Beriman</a></li>
+            <li><a href="#blog">Blog <span class="badge-new">Baru</span></a></li>
+            <li><a href="#tentang">Tentang Kami</a></li>
+            <li><a href="#kontak">Kontak</a></li>
+        </ul>
 
-    <button class="mobile-menu" type="button"
-        aria-label="Buka menu" aria-expanded="false">
-        <i class="bi bi-list"></i>
-    </button>
+        <!-- Right Actions -->
+        <div class="nav-actions">
+            <button class="icon-btn" id="searchToggle" title="Pencarian Global">
+                <i class="fas fa-search"></i>
+            </button>
 
-    <nav class="main-nav">
-        <a class="active" href="/dashboard">Beranda</a>
-        <a href="/katalog">Katalog</a>
-        <a href="/bukti-beriman">Bukti Beriman</a>
-        <a href="/isu-suku-bunga">Isu Suku Bunga</a>
-        <a href="/sejarah">Sejarah</a>
-        <a href="/blog">Blog</a>
-        <a href="/tim-kami">Tim Kami</a>
-    </nav>
+            <button class="icon-btn cart-btn" id="cartToggle" title="Keranjang Belanja">
+                <i class="fas fa-shopping-cart"></i>
+                <span class="cart-badge" id="cartCount">0</span>
+            </button>
 
-    <div class="header-actions">
-        <button class="cart-button" onclick="openCart()">
-            <i class="bi bi-cart3"></i>
-            <span class="cart-count" id="cartCount">0</span>
-        </button>
+            <div class="login-wrapper">
+                <button class="btn-login-nav" id="loginDropdownBtn">Login</button>
+                
+                <!-- Dropdown Login Box sesuai preview -->
+                <div class="login-dropdown" id="loginDropdown">
+                    <p class="login-title">Login Admin / Akun</p>
+                    <form action="#" method="POST">
+                        @csrf
+                        <input type="text" placeholder="Username / Email" class="login-input" required>
+                        <input type="password" placeholder="Password" class="login-input" required>
+                        <button type="submit" class="btn-login-submit">Masuk</button>
+                    </form>
+                </div>
+            </div>
 
-        <a href="/login" class="login-button">Login</a>
+            <button class="mobile-menu-btn" id="mobileMenuBtn">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
     </div>
-</header>
+
+    <!-- Bar Pencarian Global (Muncul saat ikon kaca pembesar diklik) -->
+    <div class="global-search-bar" id="globalSearchBar">
+        <div class="search-inner">
+            <i class="fas fa-search"></i>
+            <input type="text" placeholder="Cari menu kuliner Nusantara, artikel blog, atau layanan...">
+            <button id="closeSearch">&times;</button>
+        </div>
+    </div>
+</nav>

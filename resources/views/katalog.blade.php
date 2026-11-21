@@ -72,7 +72,7 @@
                     <svg class="w-[22px] h-[22px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                         <path d="M3 3h2.2l.5 2H21l-2.2 8.2a2 2 0 01-1.9 1.5H8.4L8.8 16H19v2H7.2L5 5H3V3zm5.5 16a1.5 1.5 0 110 3 1.5 1.5 0 010-3zm9 0a1.5 1.5 0 110 3 1.5 1.5 0 010-3z"/>
                     </svg>
-                    <span class="absolute -top-1.5 -right-2 bg-[#C8A252] text-[#132238] text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
+                    <span id="cart-count" class="absolute -top-1.5 -right-2 bg-[#C8A252] text-[#132238] text-[10px] font-bold min-w-[16px] h-4 px-1 rounded-full flex items-center justify-center transition-transform">0</span>
                 </a>
                 <!-- Tombol Login (memakai class yang sama dengan Beranda: btn-login-nav) -->
                 <a href="/login" class="btn-login-nav">Login</a>
@@ -156,6 +156,10 @@
                         'es teh manis nusantara' => 'es teh manis nusantara.jpg',
                         'es cendol dawet'        => 'es cendol dawet.jpg',
                         'wedang jahe hangat'     => 'wedang jahe hangat.jpg',
+                        'soto betawi daging'     => 'Soto Betawi daging.jpg',
+                        'gado-gado siram'        => 'gado gado siram.jpg',
+                        'ayam bakar taliwang'    => 'ayam bakar taliwang.jpg',
+                        'es kelapa muda jeruk'   => 'es kelapa muda jeruk.jpg',
                     ];
                     $namaFile = $fotoMenu[strtolower(trim($menu->name))] ?? null;
 
@@ -177,7 +181,7 @@
                         $img = asset('images/background.jpg');
                     }
                 @endphp
-                <div class="bg-[#FCF9F4] border border-[#E2D9C8] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
+                <div data-menu-id="{{ $menu->id }}" data-name="{{ $menu->name }}" data-price="{{ (int) $menu->price }}" class="bg-[#FCF9F4] border border-[#E2D9C8] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
                     <div>
                         <!-- Foto Menu & Badge Kategori -->
                         <div class="relative h-36 bg-gray-200">
@@ -200,9 +204,18 @@
                     <!-- Footer Kartu -->
                     <div class="px-4 pb-3 pt-2 border-t border-[#F0E9DC] flex items-center justify-between">
                         <span class="text-[11px] text-emerald-700 font-medium">✔ Tersedia</span>
-                        <a href="/checkout" class="bg-[#EAE2D6] hover:bg-[#C8A252] text-[#132238] hover:text-white text-xs font-semibold px-3 py-1 rounded-lg transition">
-                            Pesan
-                        </a>
+                        <!-- Tombol Tambah / Stepper jumlah -->
+                        <div>
+                            <button type="button" data-add
+                                    class="bg-[#EAE2D6] hover:bg-[#C8A252] text-[#132238] hover:text-white text-xs font-semibold px-3 py-1 rounded-lg transition">
+                                + Tambah
+                            </button>
+                            <div data-stepper class="hidden items-center gap-1 bg-[#2E5A44] text-white rounded-lg px-1 py-0.5">
+                                <button type="button" data-minus class="w-6 h-6 flex items-center justify-center text-base font-bold hover:bg-white/20 rounded" aria-label="Kurangi">−</button>
+                                <span data-qty class="min-w-[20px] text-center text-xs font-bold">1</span>
+                                <button type="button" data-plus class="w-6 h-6 flex items-center justify-center text-base font-bold hover:bg-white/20 rounded" aria-label="Tambah">+</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             @empty
@@ -222,12 +235,100 @@
         </div>
     </footer>
 
+    <!-- BAR BAYAR SEKARANG (melayang di bawah, seperti GoFood) -->
+    <div id="cart-spacer" class="hidden h-24"></div>
+    <div id="cart-bar" class="hidden fixed bottom-4 left-1/2 -translate-x-1/2 w-[calc(100%-2rem)] max-w-3xl z-50">
+        <div class="bg-[#2E5A44] text-white rounded-full shadow-xl pl-6 pr-2 py-2 flex items-center justify-between gap-4">
+            <div class="min-w-0">
+                <p class="text-sm font-bold leading-tight"><span id="bar-items">0 item</span> &middot; <span id="bar-total">Rp0</span></p>
+                <p id="bar-names" class="text-xs text-white/80 truncate"></p>
+            </div>
+            <a href="/checkout" class="shrink-0 bg-[#C8A252] hover:bg-[#b58e3e] text-[#132238] font-bold text-sm px-5 py-2.5 rounded-full transition">
+                Bayar Sekarang
+            </a>
+        </div>
+    </div>
+
     <script>
         document.getElementById('menu-toggle').addEventListener('click', function () {
             var m = document.getElementById('mobile-menu');
             m.classList.toggle('hidden');
             m.classList.toggle('flex');
         });
+
+        // ===== TROLI / KERANJANG (disimpan di localStorage, dipakai lintas halaman) =====
+        var CART_KEY = 'kusantara_cart';
+
+        function loadCart() {
+            try { return JSON.parse(localStorage.getItem(CART_KEY)) || {}; } catch (e) { return {}; }
+        }
+        function saveCart(c) {
+            try { localStorage.setItem(CART_KEY, JSON.stringify(c)); } catch (e) {}
+        }
+        function rupiah(n) { return 'Rp' + Number(n).toLocaleString('id-ID'); }
+
+        var cart = loadCart();
+
+        function renderCart() {
+            var ids = Object.keys(cart);
+            var totalQty = 0, totalPrice = 0, names = [];
+            ids.forEach(function (id) {
+                var it = cart[id];
+                totalQty += it.qty;
+                totalPrice += it.qty * it.price;
+                names.push(it.qty + 'x ' + it.name);
+            });
+
+            // Badge troli di navbar
+            var badge = document.getElementById('cart-count');
+            badge.textContent = totalQty;
+            badge.classList.add('scale-125');
+            setTimeout(function () { badge.classList.remove('scale-125'); }, 150);
+
+            // Bar bayar
+            var has = totalQty > 0;
+            document.getElementById('cart-bar').classList.toggle('hidden', !has);
+            document.getElementById('cart-spacer').classList.toggle('hidden', !has);
+            document.getElementById('bar-items').textContent = totalQty + ' item';
+            document.getElementById('bar-total').textContent = rupiah(totalPrice);
+            document.getElementById('bar-names').textContent = names.join(', ');
+
+            // Tombol di setiap kartu
+            document.querySelectorAll('[data-menu-id]').forEach(function (card) {
+                var id = card.dataset.menuId;
+                var qty = cart[id] ? cart[id].qty : 0;
+                var addBtn = card.querySelector('[data-add]');
+                var stepper = card.querySelector('[data-stepper]');
+                addBtn.classList.toggle('hidden', qty > 0);
+                stepper.classList.toggle('hidden', qty === 0);
+                stepper.classList.toggle('flex', qty > 0);
+                card.querySelector('[data-qty]').textContent = qty;
+            });
+        }
+
+        document.addEventListener('click', function (e) {
+            var card = e.target.closest('[data-menu-id]');
+            if (!card) return;
+            var id = card.dataset.menuId;
+
+            if (e.target.closest('[data-add]') || e.target.closest('[data-plus]')) {
+                if (!cart[id]) {
+                    cart[id] = { id: id, name: card.dataset.name, price: parseInt(card.dataset.price, 10), qty: 0 };
+                }
+                cart[id].qty += 1;
+            } else if (e.target.closest('[data-minus]')) {
+                if (cart[id]) {
+                    cart[id].qty -= 1;
+                    if (cart[id].qty <= 0) delete cart[id];
+                }
+            } else {
+                return;
+            }
+            saveCart(cart);
+            renderCart();
+        });
+
+        renderCart();
     </script>
 
 </body>

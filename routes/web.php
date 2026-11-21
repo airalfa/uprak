@@ -66,4 +66,8 @@ Route::get('/', function () {
     ));
 })->name('dashboard');
 
+Route::get('/blog', function () {
+    return view('blog');
+});
+
 require __DIR__.'/auth.php';

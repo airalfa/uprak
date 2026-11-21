@@ -53,7 +53,8 @@
                     </svg>
                     <span class="absolute -top-1.5 -right-2 bg-[#C8A252] text-[#132238] text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
                 </a>
-                <a href="/login" class="bg-[#C8A252] hover:bg-[#b58e3e] text-[#132238] font-bold text-sm px-5 py-1.5 rounded-lg transition">
+                <!-- Tombol Login (gaya emas dengan gradasi & bayangan, disamakan dengan Beranda) -->
+                <a href="/login" class="bg-gradient-to-b from-[#C8A252] to-[#B08A38] hover:from-[#b58e3e] hover:to-[#9A7428] text-[#132238] font-bold text-sm px-5 py-1.5 rounded-lg shadow-md transition">
                     Login
                 </a>
                 <!-- Tombol menu mobile -->

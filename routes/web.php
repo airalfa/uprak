@@ -21,9 +21,13 @@ Route::middleware('auth')->group(function () {
 
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+Route::get('/blog', function () {
+    return view('blog');
+})->name('blog.index');
+
 Route::get('/katalog', [MenuController::class, 'index'])->name('katalog.index');
 Route::resource('cart', CartController::class)->only(['index', 'store', 'update', 'destroy']);
- 
+
 Route::get('/', function () {
     $dalilList = [
         [

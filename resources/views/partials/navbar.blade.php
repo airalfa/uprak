@@ -9,14 +9,28 @@
         </a>
 
         <!-- Menu Links -->
-        <ul class="nav-links" id="navLinks">
-            <li><a href="/" class="active">Beranda</a></li>
-            <li><a href="/katalog">Katalog</a></li>
-            <li><a href="#bukti-beriman">Bukti Beriman</a></li>
-            <li><a href="#blog">Blog <span class="badge-new">Baru</span></a></li>
-            <li><a href="#tentang">Tentang Kami</a></li>
-            <li><a href="#kontak">Kontak</a></li>
-        </ul>
+<ul class="nav-links" id="navLinks">
+    <li>
+        <a href="/" class="{{ request()->is('/') ? 'active' : '' }}">Beranda</a>
+    </li>
+    <li>
+        <a href="/katalog" class="{{ request()->is('katalog*') ? 'active' : '' }}">Katalog</a>
+    </li>
+    <li>
+        <a href="/bukti-beriman" class="{{ request()->is('bukti-beriman*') ? 'active' : '' }}">Bukti Beriman</a>
+    </li>
+    <li>
+        <a href="/blog" class="{{ request()->is('blog*') ? 'active' : '' }}">
+            Blog <span class="badge-new">Baru</span>
+        </a>
+    </li>
+    <li>
+        <a href="/tentang" class="{{ request()->is('tentang*') ? 'active' : '' }}">Tentang Kami</a>
+    </li>
+    <li>
+        <a href="/kontak" class="{{ request()->is('kontak*') ? 'active' : '' }}">Kontak</a>
+    </li>
+</ul>
 
         <!-- Right Actions -->
         <div class="nav-actions">

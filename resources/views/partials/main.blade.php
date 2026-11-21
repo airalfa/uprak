@@ -14,24 +14,21 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
     <!-- Custom CSS -->
-    <link rel="stylesheet" href="{{ asset('css/home.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/kusantara.css') }}">
     @stack('styles')
 </head>
-<body>
+<body class="antialiased">
+    <div class="page-wrapper">
+        @include('partials.navbar')
 
-    <!-- Navbar -->
-    @include('partials.navbar')
+        <main>
+            @yield('content')
+            {{ $slot ?? '' }}
+        </main>
 
-    <!-- Konten Utama Halaman -->
-    <main class="main-content">
-        @yield('content')
-    </main>
+        @include('partials.footer')
+    </div>
 
-    <!-- Footer -->
-    @include('partials.footer')
-
-    <!-- Custom JS -->
-    <script src="{{ asset('js/home.js') }}"></script>
-    @stack('scripts')
+    <script src="{{ asset('js/kusantara.js') }}"></script>
 </body>
 </html>

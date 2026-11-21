@@ -13,7 +13,7 @@
 </head>
 <body class="min-h-screen flex flex-col justify-between">
 
-    <!-- NAVBAR (ukuran disamakan dengan halaman Beranda) -->
+    <!-- NAVBAR -->
     <header class="bg-[#132238] text-white sticky top-0 z-50 shadow-md">
         <div class="w-full px-5 sm:px-7 lg:px-9 h-16 flex items-center justify-between">
 
@@ -58,7 +58,6 @@
                 <a href="/login" class="bg-[#C8A252] hover:bg-[#b58e3e] text-[#132238] font-bold text-sm px-5 py-1.5 rounded-lg transition">
                     Login
                 </a>
-                <!-- Tombol menu mobile -->
                 <button id="menu-toggle" class="lg:hidden" aria-label="Buka menu">
                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
                 </button>
@@ -162,7 +161,7 @@
                         $img = asset('images/background.jpg');
                     }
 
-                    // Cek apakah menu ini sudah ada di keranjang
+                    // Cek jumlah menu ini di Session Cart
                     $qtyDiCart = session('cart')[$menu->id]['qty'] ?? 0;
                 @endphp
                 <div class="bg-[#FCF9F4] border border-[#E2D9C8] rounded-2xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col justify-between">
@@ -185,37 +184,54 @@
                         </div>
                     </div>
 
-                    <!-- Footer Kartu: Status Keranjang, Atur Jumlah (- / +) & Masuk ke Keranjang -->
-                    <form action="{{ route('cart.store') }}" method="POST" class="px-3 pb-3 pt-2.5 border-t border-[#F0E9DC] space-y-2">
-                        @csrf
-                        <input type="hidden" name="menu_id" value="{{ $menu->id }}">
+                    <!-- Footer Kartu: Tombol "+ Keranjang" berubah jadi "- [qty] +" setelah diklik -->
+                    <div class="px-3 pb-3 pt-2.5 border-t border-[#F0E9DC]">
+                        @if($qtyDiCart > 0)
+                            <!-- TAMPILAN JIKA SUDAH DI KERANJANG -->
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="text-[11px] text-[#9A7428] font-bold">🛒 Di keranjang</span>
 
-                        <div class="flex items-center justify-between">
-                            @if($qtyDiCart > 0)
-                                <span class="text-[11px] text-[#9A7428] font-bold">🛒 Di keranjang: {{ $qtyDiCart }}</span>
-                            @else
-                                <span class="text-[11px] text-emerald-700 font-medium">✔ Tersedia</span>
-                            @endif
-                            
-                            <!-- Kontrol Ikon Kurang & Tambah -->
-                            <div class="flex items-center border border-[#D8CFC2] rounded-lg bg-white overflow-hidden">
-                                <button type="button" onclick="ubahQty({{ $menu->id }}, -1)"
-                                        class="px-2 py-0.5 text-xs font-bold text-[#132238] hover:bg-[#EAE2D6] transition">
-                                    −
-                                </button>
-                                <input type="number" id="qty-{{ $menu->id }}" name="qty" value="1" min="1" readonly
-                                       class="w-7 text-center text-xs font-bold text-[#132238] focus:outline-none bg-transparent">
-                                <button type="button" onclick="ubahQty({{ $menu->id }}, 1)"
-                                        class="px-2 py-0.5 text-xs font-bold text-[#132238] hover:bg-[#EAE2D6] transition">
-                                    +
-                                </button>
+                                <div class="flex items-center border border-[#132238] rounded-lg bg-white overflow-hidden">
+                                    <!-- Tombol Kurang (-) -->
+                                    <form action="{{ route('cart.update', $menu->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="action" value="decrease">
+                                        <button type="submit" class="px-2.5 py-1 text-xs font-bold text-[#132238] hover:bg-[#EAE2D6] transition">
+                                            −
+                                        </button>
+                                    </form>
+
+                                    <span class="px-2.5 text-xs font-bold text-[#132238]">
+                                        {{ $qtyDiCart }}
+                                    </span>
+
+                                    <!-- Tombol Tambah (+) -->
+                                    <form action="{{ route('cart.update', $menu->id) }}" method="POST" class="inline">
+                                        @csrf
+                                        @method('PUT')
+                                        <input type="hidden" name="action" value="increase">
+                                        <button type="submit" class="px-2.5 py-1 text-xs font-bold text-[#132238] hover:bg-[#EAE2D6] transition">
+                                            +
+                                        </button>
+                                    </form>
+                                </div>
                             </div>
-                        </div>
+                        @else
+                            <!-- TAMPILAN AWAL SEBELUM DITAMBAH KE KERANJANG -->
+                            <form action="{{ route('cart.store') }}" method="POST" class="flex items-center justify-between gap-2">
+                                @csrf
+                                <input type="hidden" name="menu_id" value="{{ $menu->id }}">
+                                <input type="hidden" name="qty" value="1">
 
-                        <button type="submit" class="w-full bg-[#132238] hover:bg-[#C8A252] text-white hover:text-[#132238] text-xs font-semibold py-1.5 rounded-lg transition flex items-center justify-center gap-1">
-                            <span>+ Keranjang</span>
-                        </button>
-                    </form>
+                                <span class="text-[11px] text-emerald-700 font-medium">✔ Tersedia</span>
+
+                                <button type="submit" class="bg-[#132238] hover:bg-[#C8A252] text-white hover:text-[#132238] text-xs font-semibold px-3.5 py-1.5 rounded-lg transition">
+                                    + Keranjang
+                                </button>
+                            </form>
+                        @endif
+                    </div>
                 </div>
             @empty
                 <div class="col-span-full text-center py-12 bg-[#FCF9F4] rounded-2xl border border-[#E2D9C8]">
@@ -240,14 +256,6 @@
             m.classList.toggle('hidden');
             m.classList.toggle('flex');
         });
-
-        function ubahQty(id, delta) {
-            const input = document.getElementById('qty-' + id);
-            let nilaiSekarang = parseInt(input.value) || 1;
-            let nilaiBaru = nilaiSekarang + delta;
-            if (nilaiBaru < 1) nilaiBaru = 1;
-            input.value = nilaiBaru;
-        }
     </script>
 
 </body>

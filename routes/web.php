@@ -23,4 +23,47 @@ Route::middleware('auth')->group(function () {
 });
 Route::get('/katalog', [MenuController::class, 'index'])->name('katalog.index');
 Route::resource('cart', CartController::class)->only(['index', 'store', 'update', 'destroy']);
+ 
+Route::get('/', function () {
+    $dalilList = [
+        [
+            'icon' => 'fa-book-open',
+            'title' => "Al-Qur'an",
+            'quote' => '"Hai orang-orang yang beriman, janganlah kamu saling memakan harta sesamamu dengan jalan yang batil..."',
+            'source' => '(QS. An-Nisa: 29)',
+        ],
+        [
+            'icon' => 'fa-kaaba',
+            'title' => 'Hadis',
+            'quote' => '"Pedagang yang jujur dan terpercaya (akan bersama) para nabi, orang-orang yang shiddiq, dan para syuhada."',
+            'source' => '(HR. Tirmidzi)',
+        ],
+    ];
+
+    $penerapanList = [
+        'Jaminan kehalalan produk, bahan baku, dan proses di seluruh lini bisnis.',
+        'Transparansi saluran dan harga yang adil kepada seluruh pelanggan.',
+        'Solusi transaksi bebas riba yang jelas dan sesuai syariat pada sistem pembayaran.',
+    ];
+
+    $argumentsFor = [
+        'Kemudahan akses dana cepat bagi pelanggan.',
+        'Mempercepat arus kas dan perputaran transaksi.',
+        'Kompensasi risiko inflasi bagi penyedia dana.',
+    ];
+
+    $argumentsAgainst = [
+        'Terindikasi praktik riba yang dilarang agama.',
+        'Potensi membebani pelanggan dengan bunga berbunga.',
+        'Adanya alternatif akad syariah (seperti Murabahah) yang lebih adil.',
+    ];
+
+    return view('landing', compact(
+        'dalilList',
+        'penerapanList',
+        'argumentsFor',
+        'argumentsAgainst'
+    ));
+})->name('dashboard');
+
 require __DIR__.'/auth.php';

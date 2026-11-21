@@ -9,6 +9,27 @@
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; background-color: #F5EFE6; color: #1E293B; }
         .font-serif-title { font-family: 'Playfair Display', serif; }
+
+        /* ============================================================
+           TOMBOL LOGIN NAVBAR
+           Ganti isi blok ini dengan CSS .btn-login-nav ASLI dari file
+           CSS halaman Beranda (salin persis) agar warnanya identik.
+           Nilai di bawah hanya perkiraan dari screenshot.
+           ============================================================ */
+        .btn-login-nav {
+            display: inline-block;
+            background: linear-gradient(135deg, #D1A84F, #B08530);
+            color: #132238;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 8px 22px;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+            transition: all .2s ease;
+        }
+        .btn-login-nav:hover { filter: brightness(1.08); transform: translateY(-1px); }
     </style>
 </head>
 <body class="min-h-screen flex flex-col justify-between">
@@ -53,10 +74,8 @@
                     </svg>
                     <span class="absolute -top-1.5 -right-2 bg-[#C8A252] text-[#132238] text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">0</span>
                 </a>
-                <!-- Tombol Login (gaya emas dengan gradasi & bayangan, disamakan dengan Beranda) -->
-                <a href="/login" class="bg-gradient-to-b from-[#C8A252] to-[#B08A38] hover:from-[#b58e3e] hover:to-[#9A7428] text-[#132238] font-bold text-sm px-5 py-1.5 rounded-lg shadow-md transition">
-                    Login
-                </a>
+                <!-- Tombol Login (memakai class yang sama dengan Beranda: btn-login-nav) -->
+                <a href="/login" class="btn-login-nav">Login</a>
                 <!-- Tombol menu mobile -->
                 <button id="menu-toggle" class="lg:hidden" aria-label="Buka menu">
                     <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>

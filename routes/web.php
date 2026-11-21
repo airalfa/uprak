@@ -26,6 +26,33 @@ Route::get('/blog', function () {
 })->name('blog.index');
 
 Route::get('/katalog', [MenuController::class, 'index'])->name('katalog.index');
-Route::resource('cart', CartController::class)->only(['index', 'store', 'update', 'destroy']);
+
+Route::post('/cart', [CartController::class, 'store'])->name('cart.store');
+Route::put('/cart/{menuId}', [CartController::class, 'update'])->name('cart.update');
+
+Route::get('/bukti-beriman', function () {
+    $dalilList = [
+        [
+            'icon'   => 'fa-book-open',
+            'title'  => "Al-Qur'an",
+            'quote'  => '"Hai orang-orang yang beriman, janganlah kamu saling memakan harta sesamamu dengan jalan yang batil..."',
+            'source' => '(QS. An-Nisa: 29)',
+        ],
+        [
+            'icon'   => 'fa-kaaba',
+            'title'  => 'Hadis',
+            'quote'  => '"Pedagang yang jujur dan terpercaya (akan bersama) para nabi, orang-orang yang shiddiq, dan para syuhada."',
+            'source' => '(HR. Tirmidzi)',
+        ],
+    ];
+
+    $penerapanList = [
+        'Jaminan kehalalan produk, bahan baku, dan proses di seluruh lini bisnis.',
+        'Transparansi saluran dan harga yang adil kepada seluruh pelanggan.',
+        'Solusi transaksi bebas riba yang jelas dan sesuai syariat pada sistem pembayaran.',
+    ];
+
+    return view('bukti-beriman', compact('dalilList', 'penerapanList'));
+})->name('bukti-beriman');
 
 require __DIR__.'/auth.php';

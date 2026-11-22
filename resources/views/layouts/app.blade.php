@@ -11,7 +11,9 @@
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
 
     <!-- Font Awesome Icons -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
@@ -44,6 +46,29 @@
         <!-- Footer -->
         @include('partials.footer')
     </div>
+
+    <!-- BACKDROP & SLIDE-OVER CART DRAWER -->
+    <div class="kusantara-cart-backdrop" id="kusantaraCartBackdrop"></div>
+    <aside class="kusantara-cart-drawer" id="kusantaraCartDrawer" aria-label="Daftar Keranjang">
+        <div class="kcart-header">
+            <h2 class="kcart-title">Keranjang Pesanan</h2>
+            <button type="button" class="kcart-close-btn" id="closeCartDrawerBtn" aria-label="Tutup Keranjang">
+                &times;
+            </button>
+        </div>
+
+        <div class="kcart-body" id="kcartBody"></div>
+
+        <div class="kcart-footer">
+            <div class="kcart-subtotal-row">
+                <span>Subtotal</span>
+                <strong id="kcartSubtotalText">Rp0</strong>
+            </div>
+            <a href="{{ route('checkout.index') }}" class="kcart-checkout-btn is-disabled" id="kcartCheckoutBtn">
+                Lanjut ke Checkout <i class="fa-solid fa-arrow-right"></i>
+            </a>
+        </div>
+    </aside>
 
     <!-- Custom JS -->
     <script src="{{ asset('js/kusantara.js') }}"></script>

@@ -1,9 +1,9 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
+use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
     return view('dashboard');
@@ -53,5 +53,7 @@ Route::get('/bukti-beriman', function () {
 
     return view('bukti-beriman', compact('dalilList', 'penerapanList'));
 })->name('bukti-beriman');
+
+Route::view('/checkout', 'checkout')->name('checkout.index');
 
 require __DIR__.'/auth.php';

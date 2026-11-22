@@ -100,10 +100,7 @@
                     data-price="{{ (int) $menu->price }}">
                     <div>
                         <div class="katalog-thumb">
-                            <img src="{{ $img }}"
-                                alt="{{ $menu->name }}"
-                                loading="lazy"
-                                class="{{ $posisiClass }}"
+                            <img src="{{ $img }}" alt="{{ $menu->name }}" loading="lazy" class="{{ $posisiClass }}"
                                 onerror="this.onerror=null;this.src='{{ $fallbackImg }}';">
                             <span class="katalog-badge">{{ $menu->category }}</span>
                         </div>
@@ -172,6 +169,12 @@
                 try {
                     localStorage.setItem(CART_KEY, JSON.stringify(c));
                 } catch (e) { }
+
+                if (window.KusantaraCart && typeof window.KusantaraCart.sync === 'function') {
+                    window.KusantaraCart.sync();
+                } else {
+                    window.dispatchEvent(new CustomEvent('kusantara:cart-updated', { detail: c }));
+                }
             }
 
             function rupiah(n) {
@@ -181,6 +184,8 @@
             var cart = loadCart();
 
             function renderCart() {
+                cart = loadCart();
+
                 var ids = Object.keys(cart);
                 var totalQty = 0;
                 var totalPrice = 0;
@@ -189,14 +194,26 @@
                 ids.forEach(function (id) {
                     var it = cart[id];
                     if (!it || Number(it.qty || 0) <= 0) return;
-                    totalQty += Number(it.qty);
-                    totalPrice += Number(it.qty) * Number(it.price || 0);
-                    names.push(it.qty + 'x ' + it.name);
+                    var qty = Number(it.qty);
+                    totalQty += qty;
+                    totalPrice += qty * Number(it.price || 0);
+                    names.push(qty + 'x ' + it.name);
                 });
 
-                var badge = document.getElementById('cart-count') || document.getElementById('navbar-cart-count');
+                // Badge angka di navbar (#navCartBadge / #cart-count / #navbar-cart-count)
+                var badge = document.getElementById('navCartBadge') ||
+                    document.getElementById('cart-count') ||
+                    document.getElementById('navbar-cart-count');
                 if (badge) {
-                    badge.textContent = totalQty;
+                    if (totalQty > 0) {
+                        badge.textContent = String(totalQty);
+                        badge.style.display = 'inline-block';
+                        badge.classList.add('is-visible');
+                    } else {
+                        badge.textContent = '';
+                        badge.style.display = 'none';
+                        badge.classList.remove('is-visible');
+                    }
                 }
 
                 var has = totalQty > 0;
@@ -213,7 +230,7 @@
                 if (barNames) barNames.textContent = names.join(', ');
 
                 document.querySelectorAll('[data-menu-id]').forEach(function (card) {
-                    var id = card.dataset.menuId;
+                    var id = String(card.dataset.menuId);
                     var qty = cart[id] ? Number(cart[id].qty || 0) : 0;
                     var addBtn = card.querySelector('[data-add]');
                     var stepper = card.querySelector('[data-stepper]');
@@ -231,7 +248,9 @@
             document.addEventListener('click', function (e) {
                 var card = e.target.closest('[data-menu-id]');
                 if (!card) return;
-                var id = card.dataset.menuId;
+                var id = String(card.dataset.menuId);
+
+                cart = loadCart();
 
                 if (e.target.closest('[data-add]') || e.target.closest('[data-plus]')) {
                     if (!cart[id]) {
@@ -256,6 +275,12 @@
 
                 saveCart(cart);
                 renderCart();
+            });
+
+            // Dengarkan perubahan dari drawer keranjang atau tab/halaman lain
+            window.addEventListener('kusantara:cart-updated', renderCart);
+            window.addEventListener('storage', function (e) {
+                if (!e.key || e.key === CART_KEY) renderCart();
             });
 
             renderCart();

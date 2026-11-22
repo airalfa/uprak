@@ -19,10 +19,11 @@
     <!-- Styles -->
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
     <link rel="stylesheet" href="{{ asset('css/kusantara.css') }}">
+    @stack('styles')
 </head>
 
 <body class="antialiased">
-    <div class="min-h-screen">
+    <div class="min-h-screen page-wrapper">
         @include('partials.navbar')
 
         <!-- Page Heading -->
@@ -46,6 +47,7 @@
 
     <!-- Custom JS -->
     <script src="{{ asset('js/kusantara.js') }}"></script>
+    @stack('scripts')
 </body>
 
 </html>

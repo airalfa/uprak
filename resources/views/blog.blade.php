@@ -1,10 +1,6 @@
-@extends('partials.main')
+@extends('layouts.app')
 
 @section('title', 'Arsip & Sejarah Perbankan Indonesia - PT. Kusantara')
-
-@push('styles')
-    <link rel="stylesheet" href="{{ asset('css/blog.css') }}">
-@endpush
 
 @section('content')
 <div class="ed-wrapper" id="top-page">
@@ -16,7 +12,7 @@
     <header class="ed-masthead">
         <div class="ed-container">
             <div class="ed-meta-strip">
-                <span>EDISI LITERASI KEUANGAN & SEJARAH</span>
+                <span>EDISI LITERASI KEUANGAN &amp; SEJARAH</span>
                 <span class="ed-dot">•</span>
                 <span>XI PPLG — SMKS MAHAPUTRA CERDAS UTAMA</span>
                 <span class="ed-dot">•</span>
@@ -97,7 +93,18 @@
 
                 <!-- Panel Baca Kanan (Editorial Sheet) -->
                 <article class="ed-era-sheet" id="edEraSheet">
-                    <!-- Dirender dinamis oleh blog.js -->
+                    <span class="ed-sheet-badge">PERIODE I • ABAD KE-19 – 1942</span>
+                    <h3>Masa Kolonial Hindia Belanda</h3>
+                    <div class="ed-sheet-cols">
+                        <div class="ed-sheet-col">
+                            <h4>Kondisi &amp; Sistem Ekonomi</h4>
+                            <p>Sistem ekonomi berorientasi pada eksploitasi sumber daya alam dan ekspor komoditas perkebunan (<em>Cultuurstelsel</em> &amp; Politik Pintu Terbuka), yang seluruh keuntungannya mengalir ke pemerintah Belanda dan pengusaha Eropa.</p>
+                        </div>
+                        <div class="ed-sheet-col">
+                            <h4>Perkembangan Lembaga Perbankan</h4>
+                            <p>Didirikannya <em>De Javasche Bank</em> (1828) sebagai bank sirkulasi pencetak uang gulden serta bank-bank perkreditan rakyat yang belum sepenuhnya berpihak pada masyarakat pribumi.</p>
+                        </div>
+                    </div>
                 </article>
             </div>
         </div>
@@ -113,7 +120,7 @@
             </div>
 
             <div class="ed-ledger" id="edLedger">
-                <!-- Baris-baris kronologi interaktif dirender oleh blog.js -->
+                <!-- Dirender langsung & juga interaktif via script di bawah -->
             </div>
         </div>
     </section>
@@ -126,14 +133,13 @@
                 <h2 class="ed-h2">Para Perintis Kemandirian Perbankan Nasional</h2>
             </div>
 
-            <!-- Editorial Profile Rows (Bukan kartu kotak yang identik membosankan) -->
             <div class="ed-profiles">
                 <!-- Tokoh 1 -->
                 <article class="ed-profile-row ed-reveal">
                     <figure class="ed-portrait">
                         <img src="{{ asset('images/tokoh-margono.jpeg') }}"
                              alt="R. M. Margono Djojohadikusumo"
-                             onerror="this.src='https://ui-avatars.com/api/?name=Margono+Djojohadikusumo&background=132238&color=E5C17B&size=400'">
+                             onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Margono+Djojohadikusumo&background=132238&color=E5C17B&size=400'">
                         <figcaption>Arsip Nasional RI / Wikimedia Commons</figcaption>
                     </figure>
                     <div class="ed-profile-content">
@@ -149,12 +155,12 @@
                     </div>
                 </article>
 
-                <!-- Tokoh 2 (Posisi foto di kanan untuk ritme visual editorial) -->
+                <!-- Tokoh 2 -->
                 <article class="ed-profile-row ed-reverse ed-reveal">
                     <figure class="ed-portrait">
                         <img src="{{ asset('images/tokoh-sjafruddin.jpeg') }}"
                              alt="Mr. Sjafruddin Prawiranegara"
-                             onerror="this.src='https://ui-avatars.com/api/?name=Sjafruddin+Prawiranegara&background=132238&color=E5C17B&size=400'">
+                             onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Sjafruddin+Prawiranegara&background=132238&color=E5C17B&size=400'">
                         <figcaption>Arsip Museum Bank Indonesia (bi.go.id)</figcaption>
                     </figure>
                     <div class="ed-profile-content">
@@ -175,7 +181,7 @@
                     <figure class="ed-portrait">
                         <img src="{{ asset('images/tokoh-wirjaatmadja.jpeg') }}"
                              alt="Raden Bei Aria Wirjaatmadja"
-                             onerror="this.src='https://ui-avatars.com/api/?name=Aria+Wirjaatmadja&background=132238&color=E5C17B&size=400'">
+                             onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Aria+Wirjaatmadja&background=132238&color=E5C17B&size=400'">
                         <figcaption>Arsip Museum BRI Purwokerto</figcaption>
                     </figure>
                     <div class="ed-profile-content">
@@ -192,7 +198,7 @@
                 </article>
             </div>
 
-            <!-- Strip 3 Lembaga Penting (Gaya Tabel Arsip Minimalis) -->
+            <!-- Strip 3 Lembaga Penting -->
             <div class="ed-institutions ed-reveal">
                 <div class="ed-inst-item">
                     <span class="ed-inst-year">1828</span>
@@ -325,5 +331,152 @@
 @endsection
 
 @push('scripts')
-    <script src="{{ asset('js/blog.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+    // 1. Progress Bar Baca
+    const progressEl = document.getElementById('edProgress');
+    window.addEventListener('scroll', function () {
+        if (!progressEl) return;
+        const scrollTop = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        const pct = docHeight > 0 ? Math.min(100, Math.max(0, (scrollTop / docHeight) * 100)) : 0;
+        progressEl.style.width = pct + '%';
+    });
+
+    // 2. Data Split Reader 4 Era
+    const eraContent = {
+        'kolonial': {
+            badge: 'PERIODE I • ABAD KE-19 – 1942',
+            title: 'Masa Kolonial Hindia Belanda',
+            ekonomi: 'Sistem ekonomi berorientasi pada eksploitasi sumber daya alam dan ekspor komoditas perkebunan (<em>Cultuurstelsel</em> &amp; Politik Pintu Terbuka), yang seluruh keuntungannya mengalir ke pemerintah Belanda dan pengusaha Eropa.',
+            bank: 'Didirikannya <em>De Javasche Bank</em> (1828) sebagai bank sirkulasi pencetak uang gulden serta bank-bank perkreditan rakyat yang belum sepenuhnya berpihak pada masyarakat pribumi.'
+        },
+        'awal-merdeka': {
+            badge: 'PERIODE II • 1945 – 1949',
+            title: 'Masa Awal Kemerdekaan &amp; Revolusi',
+            ekonomi: 'Indonesia menghadapi blokade ekonomi Belanda, hiperinflasi akibat beredarnya mata uang Jepang dan NICA, serta kebutuhan mendesak membiayai perjuangan mempertahankan kedaulatan.',
+            bank: 'Pemerintah mendirikan <strong>Bank Negara Indonesia (BNI 46)</strong> pada 5 Juli 1946 dan menerbitkan <strong>Oeang Republik Indonesia (ORI)</strong> sebagai simbol kedaulatan ekonomi bangsa.'
+        },
+        'kedaulatan': {
+            badge: 'PERIODE III • 1950 – 1980-AN',
+            title: 'Pasca Pengakuan Kedaulatan &amp; Deregulasi',
+            ekonomi: 'Fokus pembangunan diarahkan pada penataan ulang struktur ekonomi nasional, pembiayaan sektor industri dalam negeri, serta penghimpunan dana masyarakat secara luas.',
+            bank: 'Nasionalisasi <em>De Javasche Bank</em> menjadi <strong>Bank Indonesia (1953)</strong> sebagai bank sentral, disusul pengesahan UU Pokok Perbankan (1968) dan deregulasi <strong>Pakto 88</strong>.'
+        },
+        'modern': {
+            badge: 'PERIODE IV • 2000-AN – SEKARANG',
+            title: 'Era Modern, Pengawasan OJK &amp; Transaksi Digital',
+            ekonomi: 'Ekosistem ekonomi terhubung secara digital dengan pertumbuhan UMKM, perdagangan daring, serta tuntutan transparansi biaya dan perlindungan konsumen.',
+            bank: 'Penguatan pengawasan oleh <strong>OJK</strong> dan <strong>Bank Indonesia</strong>, penerapan standar pembayaran nasional <strong>QRIS</strong>, transfer real-time, hingga layanan pembiayaan digital yang diawasi ketat.'
+        }
+    };
+
+    const eraSheet = document.getElementById('edEraSheet');
+    const eraButtons = document.querySelectorAll('.ed-era-btn');
+
+    eraButtons.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const key = btn.getAttribute('data-era');
+            const data = eraContent[key];
+            if (!data || !eraSheet) return;
+
+            eraButtons.forEach(function (b) { b.classList.remove('active'); });
+            btn.classList.add('active');
+
+            eraSheet.innerHTML =
+                '<div class="ed-sheet-anim">' +
+                    '<span class="ed-sheet-badge">' + data.badge + '</span>' +
+                    '<h3>' + data.title + '</h3>' +
+                    '<div class="ed-sheet-cols">' +
+                        '<div class="ed-sheet-col">' +
+                            '<h4>Kondisi &amp; Sistem Ekonomi</h4>' +
+                            '<p>' + data.ekonomi + '</p>' +
+                        '</div>' +
+                        '<div class="ed-sheet-col">' +
+                            '<h4>Perkembangan Lembaga Perbankan</h4>' +
+                            '<p>' + data.bank + '</p>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>';
+        });
+    });
+
+    // 3. Data Kronologi 6 Tonggak Sejarah (Ledger Accordion)
+    const milestones = [
+        {
+            year: '24 Jan 1828',
+            title: 'Pendirian De Javasche Bank di Batavia',
+            desc: 'Didirikan sebagai bank sirkulasi pertama di Hindia Belanda dengan hak tunggal (octrooi) mencetak dan mengedarkan uang gulden untuk kepentingan perdagangan ekspor kolonial.',
+            tokoh: 'Pemerintah Kolonial Hindia Belanda',
+            dampak: 'Memusatkan kendali moneter dan peredaran uang di tangan otoritas kolonial.'
+        },
+        {
+            year: '16 Des 1895',
+            title: 'Berdirinya Cikal Bakal Bank Rakyat Indonesia (BRI)',
+            desc: 'Raden Bei Aria Wirjaatmadja mendirikan <em>De Poerwokertosche Hulp en Spaarbank der Inlandsche Hoofden</em> di Purwokerto untuk membantu pegawai pribumi dan rakyat kecil lepas dari jerat rentenir.',
+            tokoh: 'Raden Bei Aria Wirjaatmadja',
+            dampak: 'Menjadi pelopor lembaga simpan pinjam berbunga ringan yang berpihak pada rakyat kecil.'
+        },
+        {
+            year: '5 Jul 1946',
+            title: 'Lahirnya Bank Negara Indonesia (BNI 46)',
+            desc: 'Didirikan oleh pemerintah Republik Indonesia tak lama setelah Proklamasi sebagai bank sirkulasi dan bank milik negara pertama untuk menopang ekonomi perjuangan dan mengedarkan ORI.',
+            tokoh: 'R. M. Margono Djojohadikusumo',
+            dampak: 'Memperkuat kedaulatan keuangan negara dan memutus ketergantungan pada mata uang kolonial.'
+        },
+        {
+            year: '1 Jul 1953',
+            title: 'Nasionalisasi De Javasche Bank menjadi Bank Indonesia',
+            desc: 'Melalui UU No. 11 Tahun 1953, pemerintah RI resmi menasionalisasi De Javasche Bank menjadi Bank Indonesia sebagai bank sentral milik bangsa sendiri.',
+            tokoh: 'Mr. Sjafruddin Prawiranegara (Gubernur BI Pertama)',
+            dampak: 'Indonesia memiliki kendali penuh atas kebijakan moneter, cadangan devisa, dan stabilitas rupiah.'
+        },
+        {
+            year: '27 Okt 1988',
+            title: 'Paket Kebijakan Oktober 1988 (Pakto 88)',
+            desc: 'Pemerintah meluncurkan deregulasi sektor perbankan yang mempermudah pendirian bank swasta nasional dan pembukaan jaringan kantor cabang di seluruh daerah.',
+            tokoh: 'Otoritas Moneter &amp; Pemerintah RI',
+            dampak: 'Memperluas akses layanan perbankan masyarakat dan meningkatkan mobilisasi dana pembangunan.'
+        },
+        {
+            year: '2011 – Kini',
+            title: 'Pengawasan OJK, Standar QRIS &amp; Ekosistem Digital',
+            desc: 'Pembentukan Otoritas Jasa Keuangan (OJK) melalui UU No. 21 Tahun 2011 serta peluncuran standar pembayaran digital nasional QRIS oleh Bank Indonesia.',
+            tokoh: 'Bank Indonesia &amp; Otoritas Jasa Keuangan (OJK)',
+            dampak: 'Transaksi nontunai menjadi lebih cepat, terstandar, transparan, dan melindungi konsumen.'
+        }
+    ];
+
+    const ledgerEl = document.getElementById('edLedger');
+    if (ledgerEl) {
+        ledgerEl.innerHTML = milestones.map(function (item, idx) {
+            return (
+                '<div class="ed-ledger-row' + (idx === 0 ? ' open' : '') + '">' +
+                    '<button type="button" class="ed-ledger-trigger">' +
+                        '<span class="ed-ledger-year">' + item.year + '</span>' +
+                        '<span class="ed-ledger-title">' + item.title + '</span>' +
+                        '<span class="ed-ledger-toggle"><i class="fas fa-plus"></i></span>' +
+                    '</button>' +
+                    '<div class="ed-ledger-panel">' +
+                        '<div class="ed-ledger-inner">' +
+                            '<p>' + item.desc + '</p>' +
+                            '<div class="ed-ledger-meta">' +
+                                '<p><strong>Tokoh / Lembaga:</strong> ' + item.tokoh + '</p>' +
+                                '<p style="margin-top:6px;"><strong>Dampak Utama:</strong> ' + item.dampak + '</p>' +
+                            '</div>' +
+                        '</div>' +
+                    '</div>' +
+                '</div>'
+            );
+        }).join('');
+
+        ledgerEl.querySelectorAll('.ed-ledger-trigger').forEach(function (trigger) {
+            trigger.addEventListener('click', function () {
+                const row = trigger.closest('.ed-ledger-row');
+                if (row) row.classList.toggle('open');
+            });
+        });
+    }
+});
+</script>
 @endpush

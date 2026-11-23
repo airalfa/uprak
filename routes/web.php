@@ -56,4 +56,6 @@ Route::get('/bukti-beriman', function () {
 
 Route::view('/checkout', 'checkout')->name('checkout.index');
 
+Route::view('/tentang', 'tentang')->name('tentang.index');
+
 require __DIR__.'/auth.php';

@@ -2761,6 +2761,464 @@ main {
 }
 
 /* ==========================================================================
+   HALAMAN TENTANG KAMI - PT. KUSANTARA
+   ========================================================================== */
+.about-page {
+    background-color: var(--cream-bg);
+    color: var(--text-dark);
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+}
+
+.about-container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 24px;
+}
+
+.about-gold-line {
+    display: inline-block;
+    width: 44px;
+    height: 3px;
+    background-color: var(--gold);
+    border-radius: 2px;
+    margin-bottom: 14px;
+}
+
+/* 1. HERO BANNER */
+.about-hero {
+    position: relative;
+    background: linear-gradient(
+        90deg,
+        #f9f5ec 0%,
+        #f9f5ec 44%,
+        rgba(249, 245, 236, 0.78) 65%,
+        rgba(249, 245, 236, 0.15) 100%
+    );
+    border-bottom: 1px solid #e6dfd1;
+    overflow: hidden;
+}
+
+.about-hero-bg {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 62%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+    z-index: 0;
+    opacity: 0.92;
+}
+
+.about-hero-overlay {
+    position: relative;
+    z-index: 1;
+    background: linear-gradient(
+        90deg,
+        #f9f5ec 0%,
+        #f9f5ec 42%,
+        rgba(249, 245, 236, 0.72) 64%,
+        rgba(249, 245, 236, 0.08) 100%
+    );
+    padding: 72px 0 80px;
+}
+
+.about-hero-content {
+    max-width: 520px;
+}
+
+.about-hero-title {
+    font-family: var(--font-serif);
+    font-size: clamp(2.3rem, 4.4vw, 3.35rem);
+    font-weight: 700;
+    line-height: 1.12;
+    color: var(--navy-dark);
+    margin-bottom: 16px;
+}
+
+.about-hero-lead {
+    font-size: 1rem;
+    line-height: 1.65;
+    color: var(--text-dark);
+    margin-bottom: 26px;
+}
+
+.about-hero-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-hover) 100%);
+    color: var(--navy-dark);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-decoration: none;
+    box-shadow: 0 6px 18px rgba(184, 137, 64, 0.28);
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.about-hero-btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.04);
+}
+
+/* 2. PROFIL & SEJARAH (2 KOLOM BERGANTIAN) */
+.about-section {
+    padding: 64px 0;
+}
+
+.about-split-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 44px;
+    align-items: center;
+}
+
+.about-split-grid.is-reversed {
+    grid-template-columns: 1.1fr 1fr;
+}
+
+.about-photo-frame {
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid #e2d8c5;
+    box-shadow: 0 12px 30px rgba(15, 33, 55, 0.08);
+    background-color: var(--cream-card);
+}
+
+.about-photo-frame img {
+    width: 100%;
+    height: 230px;
+    object-fit: cover;
+    display: block;
+}
+
+.about-heading {
+    font-family: var(--font-serif);
+    font-size: clamp(1.65rem, 2.8vw, 2.1rem);
+    font-weight: 700;
+    color: var(--navy-dark);
+    margin-bottom: 14px;
+}
+
+.about-text {
+    font-size: 0.96rem;
+    line-height: 1.75;
+    color: var(--text-dark);
+    margin-bottom: 14px;
+}
+
+.about-text:last-child {
+    margin-bottom: 0;
+}
+
+/* 3. VISI & MISI BOX */
+.about-vm-card {
+    background-color: var(--cream-card);
+    border: 1px solid #e6dcc8;
+    border-radius: 18px;
+    padding: 36px 40px;
+    display: grid;
+    grid-template-columns: 1fr 1.15fr;
+    gap: 40px;
+    box-shadow: 0 8px 24px rgba(15, 33, 55, 0.04);
+}
+
+.about-vm-col {
+    display: flex;
+    align-items: flex-start;
+    gap: 18px;
+}
+
+.about-vm-col + .about-vm-col {
+    border-left: 1px solid #dfd3bd;
+    padding-left: 36px;
+}
+
+.about-vm-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background-color: var(--navy-dark);
+    color: var(--white);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.35rem;
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.about-vm-body h3 {
+    font-family: var(--font-serif);
+    font-size: 1.45rem;
+    font-weight: 700;
+    color: var(--navy-dark);
+    margin-bottom: 10px;
+}
+
+.about-vm-body p {
+    font-size: 0.94rem;
+    line-height: 1.7;
+    color: var(--text-dark);
+}
+
+.about-misi-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.about-misi-list li {
+    position: relative;
+    padding-left: 18px;
+    font-size: 0.93rem;
+    line-height: 1.55;
+    color: var(--text-dark);
+}
+
+.about-misi-list li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background-color: var(--gold);
+}
+
+/* 4. KEUNGGULAN KAMI */
+.about-center-head {
+    text-align: center;
+    max-width: 680px;
+    margin: 0 auto 36px;
+}
+
+.about-center-title-wrap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-bottom: 10px;
+}
+
+.about-center-title-wrap::before,
+.about-center-title-wrap::after {
+    content: "";
+    width: 48px;
+    height: 2px;
+    background-color: var(--gold);
+}
+
+.about-center-title {
+    font-family: var(--font-serif);
+    font-size: clamp(1.65rem, 2.8vw, 2.1rem);
+    font-weight: 700;
+    color: var(--navy-dark);
+    margin: 0;
+}
+
+.about-center-sub {
+    font-size: 0.93rem;
+    line-height: 1.65;
+    color: var(--text-muted);
+}
+
+.about-usp-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+}
+
+.about-usp-card {
+    background-color: var(--cream-card);
+    border: 1px solid #e6dcc8;
+    border-radius: 14px;
+    padding: 24px 16px;
+    text-align: center;
+    transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.about-usp-card:hover {
+    transform: translateY(-3px);
+    border-color: var(--gold);
+}
+
+.about-usp-icon {
+    font-size: 1.75rem;
+    color: var(--navy-dark);
+    margin-bottom: 12px;
+}
+
+.about-usp-card h4 {
+    font-size: 0.94rem;
+    font-weight: 700;
+    color: var(--navy-dark);
+    margin-bottom: 6px;
+    line-height: 1.35;
+}
+
+.about-usp-card p {
+    font-size: 0.82rem;
+    line-height: 1.5;
+    color: var(--text-muted);
+}
+
+/* 5. TIM KAMI (TIM INTI) */
+.about-team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 22px;
+}
+
+@media (max-width: 960px) {
+    .about-team-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 600px) {
+    .about-team-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+.about-team-card {
+    background-color: var(--cream-card);
+    border: 1px solid #e2d8c5;
+    border-radius: 16px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 8px 20px rgba(15, 33, 55, 0.05);
+    transition: transform 0.22s ease;
+}
+
+.about-team-card:hover {
+    transform: translateY(-4px);
+}
+
+.about-team-photo {
+    width: 100%;
+    height: 240px;
+    background-color: #ece4d5;
+    overflow: hidden;
+}
+
+.about-team-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center 20%; /* fokus ke area wajah/kepala */
+    display: block;
+}
+
+.about-team-badge {
+    background-color: var(--navy-dark);
+    color: var(--white);
+    text-align: center;
+    padding: 14px 12px;
+    margin-top: auto;
+}
+
+.about-team-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 2px;
+}
+
+.about-team-role {
+    font-size: 0.78rem;
+    font-weight: 500;
+    color: #e5c17b;
+}
+
+/* 6. CTA BANNER BAWAH */
+.about-cta-banner {
+    background-color: var(--navy-dark);
+    color: var(--white);
+    padding: 44px 0;
+    border-top: 2px solid var(--gold);
+}
+
+.about-cta-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+
+.about-cta-text h2 {
+    font-family: var(--font-serif);
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 6px;
+}
+
+.about-cta-text p {
+    font-size: 0.94rem;
+    color: #cbd5e1;
+}
+
+.about-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px;
+    border-radius: 8px;
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-hover) 100%);
+    color: var(--navy-dark);
+    font-size: 0.92rem;
+    font-weight: 800;
+    text-decoration: none;
+    transition: transform 0.2s ease, filter 0.2s ease;
+}
+
+.about-cta-btn:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+@media (max-width: 960px) {
+    .about-usp-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .about-split-grid,
+    .about-split-grid.is-reversed,
+    .about-vm-card {
+        grid-template-columns: 1fr;
+    }
+
+    .about-vm-col + .about-vm-col {
+        border-left: none;
+        border-top: 1px solid #dfd3bd;
+        padding-left: 0;
+        padding-top: 24px;
+    }
+}
+
+@media (max-width: 600px) {
+    .about-hero-bg {
+        width: 100%;
+        opacity: 0.22;
+    }
+
+    .about-usp-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ==========================================================================
    FOOTER PT. KUSANTARA
    ========================================================================== */
 .kusantara-footer {

@@ -58,4 +58,6 @@ Route::view('/checkout', 'checkout')->name('checkout.index');
 
 Route::view('/tentang', 'tentang')->name('tentang.index');
 
+Route::view('/kontak', 'kontak')->name('kontak.index');
+
 require __DIR__.'/auth.php';

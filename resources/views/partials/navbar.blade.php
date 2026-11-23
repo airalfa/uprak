@@ -50,10 +50,10 @@
                 <span id="navCartBadge" class="nav-cart-badge"></span>
             </button>
 
-            <div class="login-wrapper">
+            <!-- <div class="login-wrapper">
                 <button class="btn-login-nav" id="loginDropdownBtn">Login</button>
 
-                <!-- Dropdown Login Box sesuai preview -->
+                Dropdown Login Box sesuai preview
                 <div class="login-dropdown" id="loginDropdown">
                     <p class="login-title">Login Admin / Akun</p>
                     <form action="#" method="POST">
@@ -63,7 +63,7 @@
                         <button type="submit" class="btn-login-submit">Masuk</button>
                     </form>
                 </div>
-            </div>
+            </div> -->
 
             <button class="mobile-menu-btn" id="mobileMenuBtn">
                 <i class="fas fa-bars"></i>

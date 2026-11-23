@@ -3,6 +3,7 @@
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
+use App\Http\Controllers\AdminAuthController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -59,5 +60,35 @@ Route::view('/checkout', 'checkout')->name('checkout.index');
 Route::view('/tentang', 'tentang')->name('tentang.index');
 
 Route::view('/kontak', 'kontak')->name('kontak.index');
+
+Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
+Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
+Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+
+Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
+});
+
+Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function () {
+    Route::view('/dashboard', 'admin.dashboard')->middleware('admin.auth:dashboard')->name('dashboard');
+    Route::view('/pesanan', 'admin.pesanan')->middleware('admin.auth:pesanan')->name('pesanan');
+    Route::view('/menu', 'admin.menu')->middleware('admin.auth:menu')->name('menu');
+    Route::view('/inventaris', 'admin.inventaris')->middleware('admin.auth:inventaris')->name('inventaris');
+    Route::view('/reservasi', 'admin.reservasi')->middleware('admin.auth:reservasi')->name('reservasi');
+    Route::view('/pelanggan', 'admin.pelanggan')->middleware('admin.auth:pelanggan')->name('pelanggan');
+    Route::view('/promo', 'admin.promo')->middleware('admin.auth:promo')->name('promo');
+    Route::view('/catering-delivery', 'admin.catering')->middleware('admin.auth:catering')->name('catering');
+    Route::view('/keuangan', 'admin.keuangan')->middleware('admin.auth:keuangan')->name('keuangan');
+    Route::view('/laporan', 'admin.laporan')->middleware('admin.auth:laporan')->name('laporan');
+    Route::view('/kelola-website', 'admin.website')->middleware('admin.auth:website')->name('website');
+    Route::view('/blog', 'admin.blog')->middleware('admin.auth:blog')->name('blog');
+    Route::view('/ulasan', 'admin.ulasan')->middleware('admin.auth:ulasan')->name('ulasan');
+    Route::view('/media', 'admin.media')->middleware('admin.auth:media')->name('media');
+    Route::view('/karyawan', 'admin.karyawan')->middleware('admin.auth:karyawan')->name('karyawan');
+    Route::view('/hak-akses', 'admin.hak-akses')->middleware('admin.auth:hak_akses')->name('hak_akses');
+    Route::view('/pengaturan', 'admin.pengaturan')->middleware('admin.auth:pengaturan')->name('pengaturan');
+});
+
+Route::view('/admin/dashboard', 'admin.dashboard')->name('admin.dashboard');
 
 require __DIR__.'/auth.php';

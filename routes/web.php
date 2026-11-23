@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\AdminAuthController;
+use App\Http\Controllers\OrderController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -16,11 +17,10 @@ Route::get('/dashboard', function () {
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
-
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
-
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
+
 Route::get('/blog', function () {
     return view('blog');
 })->name('blog.index');
@@ -56,22 +56,29 @@ Route::get('/bukti-beriman', function () {
 })->name('bukti-beriman');
 
 Route::view('/checkout', 'checkout')->name('checkout.index');
-
 Route::view('/tentang', 'tentang')->name('tentang.index');
-
 Route::view('/kontak', 'kontak')->name('kontak.index');
 
+// Route publik checkout pelanggan (tanpa login)
+Route::post('/pesanan', [OrderController::class, 'store'])->name('pesanan.store');
+
+// Route autentikasi khusus admin
 Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
-Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function () {
-    Route::view('/dashboard', 'admin.dashboard')->name('dashboard');
-});
-
+// Route area admin (terproteksi middleware admin.auth & izin fitur per role)
 Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function () {
     Route::view('/dashboard', 'admin.dashboard')->middleware('admin.auth:dashboard')->name('dashboard');
-    Route::view('/pesanan', 'admin.pesanan')->middleware('admin.auth:pesanan')->name('pesanan');
+
+    Route::get('/pesanan', [OrderController::class, 'index'])
+        ->middleware('admin.auth:pesanan')
+        ->name('pesanan');
+
+    Route::patch('/pesanan/{id}/status', [OrderController::class, 'updateStatus'])
+        ->middleware('admin.auth:pesanan')
+        ->name('pesanan.status');
+
     Route::view('/menu', 'admin.menu')->middleware('admin.auth:menu')->name('menu');
     Route::view('/inventaris', 'admin.inventaris')->middleware('admin.auth:inventaris')->name('inventaris');
     Route::view('/reservasi', 'admin.reservasi')->middleware('admin.auth:reservasi')->name('reservasi');
@@ -88,7 +95,5 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::view('/hak-akses', 'admin.hak-akses')->middleware('admin.auth:hak_akses')->name('hak_akses');
     Route::view('/pengaturan', 'admin.pengaturan')->middleware('admin.auth:pengaturan')->name('pengaturan');
 });
-
-Route::view('/admin/dashboard', 'admin.dashboard')->name('admin.dashboard');
 
 require __DIR__.'/auth.php';

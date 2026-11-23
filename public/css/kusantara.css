@@ -4689,3 +4689,235 @@ main {
         padding: 16px;
     }
 }
+
+/* ==========================================================================
+   ADMIN PESANAN (ORDER MANAGEMENT) - PT. KUSANTARA
+   ========================================================================== */
+.admin-order-toolbar {
+    background-color: var(--white);
+    border: 1px solid #e6dfd1;
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 18px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.admin-order-filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+    flex: 1;
+}
+
+.admin-order-search {
+    min-width: 220px;
+    max-width: 300px;
+    flex: 1;
+    padding: 9px 12px;
+    border-radius: 8px;
+    border: 1px solid #dfd5c3;
+    background-color: #faf7f0;
+    font-size: 0.86rem;
+    color: var(--text-dark);
+    outline: none;
+}
+
+.admin-order-search:focus {
+    border-color: var(--gold);
+    background-color: var(--white);
+}
+
+.admin-service-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.admin-service-pill {
+    padding: 7px 12px;
+    border-radius: 8px;
+    border: 1px solid #e2d8c5;
+    background-color: var(--cream-bg);
+    color: var(--navy-dark);
+    font-size: 0.8rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.16s ease;
+}
+
+.admin-service-pill.is-active {
+    background-color: var(--navy-dark);
+    color: var(--white);
+    border-color: var(--navy-dark);
+}
+
+.admin-table-wrap {
+    background-color: var(--white);
+    border: 1px solid #e6dfd1;
+    border-radius: 14px;
+    overflow-x: auto;
+    box-shadow: 0 4px 14px rgba(15, 33, 55, 0.03);
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 820px;
+    font-size: 0.86rem;
+}
+
+.admin-table thead th {
+    background-color: var(--cream-card);
+    color: var(--navy-dark);
+    font-weight: 700;
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 1px solid #e4dac7;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.admin-table tbody td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #f0ebe0;
+    color: var(--text-dark);
+    vertical-align: middle;
+}
+
+.admin-table tbody tr:hover {
+    background-color: #fcfaf5;
+}
+
+.admin-status-select {
+    padding: 6px 10px;
+    border-radius: 7px;
+    border: 1px solid #d9ceba;
+    background-color: var(--white);
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--navy-dark);
+    cursor: pointer;
+}
+
+.admin-action-group {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.admin-btn-sm {
+    padding: 6px 10px;
+    border-radius: 7px;
+    border: 1px solid #dfd5c3;
+    background-color: var(--cream-bg);
+    color: var(--navy-dark);
+    font-size: 0.78rem;
+    font-weight: 700;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.admin-btn-sm:hover {
+    background-color: var(--gold);
+    border-color: var(--gold);
+}
+
+.admin-btn-sm.is-danger {
+    color: #991b1b;
+    border-color: #fecaca;
+    background-color: #fef2f2;
+}
+
+.admin-btn-sm.is-danger:hover {
+    background-color: #fee2e2;
+}
+
+.admin-badge-status.is-ready {
+    background-color: #e0f2fe;
+    color: #075985;
+}
+
+.admin-badge-status.is-shipping {
+    background-color: #ede9fe;
+    color: #5b21b6;
+}
+
+.admin-badge-status.is-cancel {
+    background-color: #fee2e2;
+    color: #991b1b;
+}
+
+/* MODAL DETAIL & INVOICE */
+.admin-modal-backdrop {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(10, 20, 34, 0.55);
+    z-index: 1200;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+}
+
+.admin-modal-backdrop.is-open {
+    display: flex;
+}
+
+.admin-modal-box {
+    width: 100%;
+    max-width: 520px;
+    background-color: var(--white);
+    border-radius: 16px;
+    border: 1px solid #e6dfd1;
+    padding: 22px;
+    box-shadow: 0 24px 60px rgba(10, 20, 34, 0.28);
+}
+
+.admin-modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid #eee7da;
+    padding-bottom: 12px;
+    margin-bottom: 14px;
+}
+
+.admin-modal-title {
+    font-family: var(--font-serif);
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--navy-dark);
+    margin: 0;
+}
+
+.admin-modal-close {
+    border: none;
+    background: transparent;
+    font-size: 1.2rem;
+    color: var(--text-muted);
+    cursor: pointer;
+}
+
+@media print {
+    .admin-sidebar,
+    .admin-topbar,
+    .admin-subnav,
+    .admin-order-toolbar,
+    .admin-footer-note,
+    .no-print {
+        display: none !important;
+    }
+
+    .admin-content {
+        padding: 0 !important;
+    }
+}

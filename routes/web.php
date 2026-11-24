@@ -13,6 +13,7 @@ use App\Http\Controllers\AdminPromoController;
 use App\Http\Controllers\AdminCateringDeliveryController;
 use App\Http\Controllers\AdminFinanceController;
 use App\Http\Controllers\AdminReportController;
+use App\Http\Controllers\AdminWebsiteController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -218,7 +219,13 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::get('/laporan', [AdminReportController::class, 'index'])
         ->middleware('admin.auth:laporan')
         ->name('laporan');
-    Route::view('/kelola-website', 'admin.website')->middleware('admin.auth:website')->name('website');
+    Route::get('/kelola-website', [AdminWebsiteController::class, 'index'])
+        ->middleware('admin.auth:website')
+        ->name('website');
+
+    Route::put('/kelola-website', [AdminWebsiteController::class, 'update'])
+        ->middleware('admin.auth:website')
+        ->name('website.update');
     Route::view('/blog', 'admin.blog')->middleware('admin.auth:blog')->name('blog');
     Route::view('/ulasan', 'admin.ulasan')->middleware('admin.auth:ulasan')->name('ulasan');
     Route::view('/media', 'admin.media')->middleware('admin.auth:media')->name('media');

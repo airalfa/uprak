@@ -17,6 +17,7 @@ use App\Http\Controllers\AdminWebsiteController;
 use App\Http\Controllers\AdminBlogController;
 use App\Http\Controllers\AdminReviewController;
 use App\Http\Controllers\AdminMediaController;
+use App\Http\Controllers\AdminEmployeeController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -350,7 +351,25 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/media/{id}', [AdminMediaController::class, 'destroy'])
         ->middleware('admin.auth:media')
         ->name('media.destroy');
-    Route::view('/karyawan', 'admin.karyawan')->middleware('admin.auth:karyawan')->name('karyawan');
+    Route::get('/karyawan', [AdminEmployeeController::class, 'index'])
+        ->middleware('admin.auth:karyawan')
+        ->name('karyawan');
+
+    Route::post('/karyawan', [AdminEmployeeController::class, 'store'])
+        ->middleware('admin.auth:karyawan')
+        ->name('karyawan.store');
+
+    Route::put('/karyawan/{id}', [AdminEmployeeController::class, 'update'])
+        ->middleware('admin.auth:karyawan')
+        ->name('karyawan.update');
+
+    Route::patch('/karyawan/{id}/status', [AdminEmployeeController::class, 'updateStatus'])
+        ->middleware('admin.auth:karyawan')
+        ->name('karyawan.status');
+
+    Route::delete('/karyawan/{id}', [AdminEmployeeController::class, 'destroy'])
+        ->middleware('admin.auth:karyawan')
+        ->name('karyawan.destroy');
     Route::view('/hak-akses', 'admin.hak-akses')->middleware('admin.auth:hak_akses')->name('hak_akses');
     Route::view('/pengaturan', 'admin.pengaturan')->middleware('admin.auth:pengaturan')->name('pengaturan');
 });

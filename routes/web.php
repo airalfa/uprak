@@ -18,6 +18,7 @@ use App\Http\Controllers\AdminBlogController;
 use App\Http\Controllers\AdminReviewController;
 use App\Http\Controllers\AdminMediaController;
 use App\Http\Controllers\AdminEmployeeController;
+use App\Http\Controllers\AdminRolePermissionController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -370,7 +371,25 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/karyawan/{id}', [AdminEmployeeController::class, 'destroy'])
         ->middleware('admin.auth:karyawan')
         ->name('karyawan.destroy');
-    Route::view('/hak-akses', 'admin.hak-akses')->middleware('admin.auth:hak_akses')->name('hak_akses');
+    Route::get('/hak-akses', [AdminRolePermissionController::class, 'index'])
+        ->middleware('admin.auth:hak_akses')
+        ->name('hak_akses');
+
+    Route::post('/hak-akses', [AdminRolePermissionController::class, 'store'])
+        ->middleware('admin.auth:hak_akses')
+        ->name('hak_akses.store');
+
+    Route::put('/hak-akses/{id}', [AdminRolePermissionController::class, 'update'])
+        ->middleware('admin.auth:hak_akses')
+        ->name('hak_akses.update');
+
+    Route::patch('/hak-akses/{id}/toggle-status', [AdminRolePermissionController::class, 'toggleStatus'])
+        ->middleware('admin.auth:hak_akses')
+        ->name('hak_akses.toggle-status');
+
+    Route::delete('/hak-akses/{id}', [AdminRolePermissionController::class, 'destroy'])
+        ->middleware('admin.auth:hak_akses')
+        ->name('hak_akses.destroy');
     Route::view('/pengaturan', 'admin.pengaturan')->middleware('admin.auth:pengaturan')->name('pengaturan');
 });
 

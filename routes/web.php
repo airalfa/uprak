@@ -15,6 +15,7 @@ use App\Http\Controllers\AdminFinanceController;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\AdminWebsiteController;
 use App\Http\Controllers\AdminBlogController;
+use App\Http\Controllers\AdminReviewController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -53,13 +54,13 @@ Route::get('/blog', function () {
             $excerpt = (string) ($r->excerpt ?? $r->ringkasan ?? Str::limit(strip_tags($content), 140));
 
             $posts[] = [
-                'id'           => $r->id,
-                'title'        => $title,
-                'slug'         => (string) ($r->slug ?? Str::slug($title)),
-                'category'     => (string) ($r->category ?? $r->kategori ?? 'Kuliner Nusantara'),
-                'author'       => (string) ($r->author ?? $r->penulis ?? 'Tim Kusantara'),
-                'excerpt'      => $excerpt,
-                'content'      => $content,
+                'id' => $r->id,
+                'title' => $title,
+                'slug' => (string) ($r->slug ?? Str::slug($title)),
+                'category' => (string) ($r->category ?? $r->kategori ?? 'Kuliner Nusantara'),
+                'author' => (string) ($r->author ?? $r->penulis ?? 'Tim Kusantara'),
+                'excerpt' => $excerpt,
+                'content' => $content,
                 'published_at' => !empty($r->published_at)
                     ? substr((string) $r->published_at, 0, 10)
                     : (!empty($r->created_at) ? substr((string) $r->created_at, 0, 10) : now()->toDateString()),
@@ -69,8 +70,6 @@ Route::get('/blog', function () {
 
     return view('blog', compact('posts'));
 })->name('blog.index');
-
-Route::post('/blog', [AdminBlogController::class, 'store'])->name('blog.public.store');
 
 Route::get('/katalog', [MenuController::class, 'index'])->name('katalog.index');
 
@@ -103,7 +102,36 @@ Route::get('/bukti-beriman', function () {
 })->name('bukti-beriman');
 
 Route::view('/checkout', 'checkout')->name('checkout.index');
-Route::view('/tentang', 'tentang')->name('tentang.index');
+
+Route::get('/tentang', function () {
+    $table = AdminReviewController::resolveTable();
+    $publishedReviews = [];
+
+    if ($table) {
+        $rows = DB::table($table)
+            ->orderByDesc('id')
+            ->get();
+
+        foreach ($rows as $r) {
+            $status = strtolower(trim((string) ($r->status ?? 'Menunggu')));
+            if (!in_array($status, ['terbit', 'published', 'approved', 'aktif', 'tampil'], true)) {
+                continue;
+            }
+
+            $publishedReviews[] = [
+                'customer_name'   => (string) ($r->customer_name ?? $r->name ?? $r->nama ?? 'Pelanggan'),
+                'service_or_menu' => (string) ($r->service_or_menu ?? $r->service ?? 'Delivery'),
+                'rating'          => max(1, min(5, (int) ($r->rating ?? 5))),
+                'comment'         => (string) ($r->comment ?? $r->review ?? $r->ulasan ?? ''),
+                'admin_reply'     => (string) ($r->admin_reply ?? ''),
+                'created_at'      => !empty($r->created_at) ? substr((string) $r->created_at, 0, 10) : now()->toDateString(),
+            ];
+        }
+    }
+
+    return view('tentang', compact('publishedReviews'));
+})->name('tentang.index');
+
 Route::view('/kontak', 'kontak')->name('kontak.index');
 
 // Route publik checkout pelanggan (tanpa login)
@@ -115,6 +143,8 @@ Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
 
 Route::post('/promo/validate', [AdminPromoController::class, 'validateCode'])->name('promo.validate');
+
+Route::post('/ulasan', [AdminReviewController::class, 'storePublic'])->name('ulasan.store');
 
 // Route area admin (terproteksi middleware admin.auth & izin fitur per role)
 Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function () {
@@ -292,7 +322,22 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         ->middleware('admin.auth:blog')
         ->name('blog.destroy');
 
-    Route::view('/ulasan', 'admin.ulasan')->middleware('admin.auth:ulasan')->name('ulasan');
+    Route::get('/ulasan', [AdminReviewController::class, 'index'])
+        ->middleware('admin.auth:ulasan')
+        ->name('ulasan');
+
+    Route::patch('/ulasan/{id}/reply', [AdminReviewController::class, 'reply'])
+        ->middleware('admin.auth:ulasan')
+        ->name('ulasan.reply');
+
+    Route::patch('/ulasan/{id}/status', [AdminReviewController::class, 'updateStatus'])
+        ->middleware('admin.auth:ulasan')
+        ->name('ulasan.status');
+
+    Route::delete('/ulasan/{id}', [AdminReviewController::class, 'destroy'])
+        ->middleware('admin.auth:ulasan')
+        ->name('ulasan.destroy');
+
     Route::view('/media', 'admin.media')->middleware('admin.auth:media')->name('media');
     Route::view('/karyawan', 'admin.karyawan')->middleware('admin.auth:karyawan')->name('karyawan');
     Route::view('/hak-akses', 'admin.hak-akses')->middleware('admin.auth:hak_akses')->name('hak_akses');

@@ -438,67 +438,7 @@
     <div id="addPublicPostModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;padding:20px;overflow-y:auto;align-items:center;justify-content:center;">
         <div style="background:#fff;max-width:580px;width:100%;border-radius:16px;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,0.2);">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
-                <h2 style="font-size:1.2rem;font-weight:800;margin:0;">Tambah Artikel Baru</h2>
-                <button type="button" id="closeAddPublicPostModal"
-                        style="background:none;border:none;font-size:1.5rem;line-height:1;cursor:pointer;color:#6b7280;">&times;</button>
             </div>
-
-            <form action="{{ route('blog.public.store') }}" method="POST">
-                @csrf
-                <input type="hidden" name="redirect_to" value="blog">
-
-                <div style="display:grid;gap:12px;">
-                    <div>
-                        <label style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Judul Artikel</label>
-                        <input type="text" name="title" required
-                               style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #d1d5db;">
-                    </div>
-
-                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
-                        <div>
-                            <label style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Kategori</label>
-                            <input type="text" name="category" value="Kuliner Nusantara" required
-                                   style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #d1d5db;">
-                        </div>
-                        <div>
-                            <label style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Penulis</label>
-                            <input type="text" name="author" value="Tim Kusantara"
-                                   style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #d1d5db;">
-                        </div>
-                        <div>
-                            <label style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Status</label>
-                            <select name="status"
-                                    style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #d1d5db;background:#fff;">
-                                <option value="Terbit">Terbit</option>
-                                <option value="Draft">Draft</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Ringkasan Singkat (Opsional)</label>
-                        <textarea name="excerpt" rows="2"
-                                  style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #d1d5db;"></textarea>
-                    </div>
-
-                    <div>
-                        <label style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Isi Artikel</label>
-                        <textarea name="content" rows="5" required
-                                  style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #d1d5db;"></textarea>
-                    </div>
-                </div>
-
-                <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
-                    <button type="button" id="cancelAddPublicPostBtn"
-                            style="padding:8px 14px;border-radius:8px;border:1px solid #d1d5db;background:#fff;font-weight:700;cursor:pointer;">
-                        Batal
-                    </button>
-                    <button type="submit"
-                            style="padding:8px 16px;border-radius:8px;border:none;background:#1e293b;color:#fff;font-weight:700;cursor:pointer;">
-                        Simpan Artikel
-                    </button>
-                </div>
-            </form>
         </div>
     </div>
 

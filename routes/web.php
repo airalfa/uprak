@@ -12,6 +12,7 @@ use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminPromoController;
 use App\Http\Controllers\AdminCateringDeliveryController;
 use App\Http\Controllers\AdminFinanceController;
+use App\Http\Controllers\AdminReportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -214,7 +215,9 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/keuangan/{id}', [AdminFinanceController::class, 'destroy'])
         ->middleware('admin.auth:keuangan')
         ->name('keuangan.destroy');
-    Route::view('/laporan', 'admin.laporan')->middleware('admin.auth:laporan')->name('laporan');
+    Route::get('/laporan', [AdminReportController::class, 'index'])
+        ->middleware('admin.auth:laporan')
+        ->name('laporan');
     Route::view('/kelola-website', 'admin.website')->middleware('admin.auth:website')->name('website');
     Route::view('/blog', 'admin.blog')->middleware('admin.auth:blog')->name('blog');
     Route::view('/ulasan', 'admin.ulasan')->middleware('admin.auth:ulasan')->name('ulasan');

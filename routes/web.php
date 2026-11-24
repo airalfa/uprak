@@ -7,6 +7,7 @@ use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AdminMenuController;
 use App\Http\Controllers\AdminInventoryController;
+use App\Http\Controllers\AdminReservationController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -116,8 +117,25 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/inventaris/{id}', [AdminInventoryController::class, 'destroy'])
         ->middleware('admin.auth:inventaris')
         ->name('inventaris.destroy');
-    Route::view('/reservasi', 'admin.reservasi')->middleware('admin.auth:reservasi')->name('reservasi');
-    Route::view('/pelanggan', 'admin.pelanggan')->middleware('admin.auth:pelanggan')->name('pelanggan');
+Route::get('/reservasi', [AdminReservationController::class, 'index'])
+        ->middleware('admin.auth:reservasi')
+        ->name('reservasi');
+
+    Route::post('/reservasi', [AdminReservationController::class, 'store'])
+        ->middleware('admin.auth:reservasi')
+        ->name('reservasi.store');
+
+    Route::put('/reservasi/{id}', [AdminReservationController::class, 'update'])
+        ->middleware('admin.auth:reservasi')
+        ->name('reservasi.update');
+
+    Route::patch('/reservasi/{id}/status', [AdminReservationController::class, 'updateStatus'])
+        ->middleware('admin.auth:reservasi')
+        ->name('reservasi.status');
+
+    Route::delete('/reservasi/{id}', [AdminReservationController::class, 'destroy'])
+        ->middleware('admin.auth:reservasi')
+        ->name('reservasi.destroy');    Route::view('/pelanggan', 'admin.pelanggan')->middleware('admin.auth:pelanggan')->name('pelanggan');
     Route::view('/promo', 'admin.promo')->middleware('admin.auth:promo')->name('promo');
     Route::view('/catering-delivery', 'admin.catering')->middleware('admin.auth:catering')->name('catering');
     Route::view('/keuangan', 'admin.keuangan')->middleware('admin.auth:keuangan')->name('keuangan');

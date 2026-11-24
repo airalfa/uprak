@@ -11,6 +11,7 @@ use App\Http\Controllers\AdminReservationController;
 use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminPromoController;
 use App\Http\Controllers\AdminCateringDeliveryController;
+use App\Http\Controllers\AdminFinanceController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -175,7 +176,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/promo/{id}', [AdminPromoController::class, 'destroy'])
         ->middleware('admin.auth:promo')
         ->name('promo.destroy');
-Route::get('/catering-delivery', [AdminCateringDeliveryController::class, 'index'])
+    Route::get('/catering-delivery', [AdminCateringDeliveryController::class, 'index'])
         ->middleware('admin.auth:catering')
         ->name('catering');
 
@@ -193,7 +194,26 @@ Route::get('/catering-delivery', [AdminCateringDeliveryController::class, 'index
 
     Route::delete('/catering-delivery/{id}', [AdminCateringDeliveryController::class, 'destroy'])
         ->middleware('admin.auth:catering')
-        ->name('catering.destroy');    Route::view('/keuangan', 'admin.keuangan')->middleware('admin.auth:keuangan')->name('keuangan');
+        ->name('catering.destroy');
+    Route::get('/keuangan', [AdminFinanceController::class, 'index'])
+        ->middleware('admin.auth:keuangan')
+        ->name('keuangan');
+
+    Route::post('/keuangan', [AdminFinanceController::class, 'store'])
+        ->middleware('admin.auth:keuangan')
+        ->name('keuangan.store');
+
+    Route::put('/keuangan/{id}', [AdminFinanceController::class, 'update'])
+        ->middleware('admin.auth:keuangan')
+        ->name('keuangan.update');
+
+    Route::patch('/keuangan/{id}/toggle-status', [AdminFinanceController::class, 'toggleStatus'])
+        ->middleware('admin.auth:keuangan')
+        ->name('keuangan.toggle-status');
+
+    Route::delete('/keuangan/{id}', [AdminFinanceController::class, 'destroy'])
+        ->middleware('admin.auth:keuangan')
+        ->name('keuangan.destroy');
     Route::view('/laporan', 'admin.laporan')->middleware('admin.auth:laporan')->name('laporan');
     Route::view('/kelola-website', 'admin.website')->middleware('admin.auth:website')->name('website');
     Route::view('/blog', 'admin.blog')->middleware('admin.auth:blog')->name('blog');

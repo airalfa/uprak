@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\AdminCustomerController;
+use App\Http\Controllers\AdminPromoController;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -38,13 +39,14 @@ class OrderController extends Controller
     public function store(Request $request)
     {
         $data = $request->validate([
-            'service'  => ['required', 'string', 'max:50'],
-            'customer' => ['required', 'string', 'max:120'],
-            'phone'    => ['nullable', 'string', 'max:40'],
-            'items'    => ['required', 'string'],
-            'payment'  => ['nullable', 'string', 'max:60'],
-            'total'    => ['required', 'string', 'max:60'],
-            'note'     => ['nullable', 'string'],
+            'service'    => ['required', 'string', 'max:50'],
+            'customer'   => ['required', 'string', 'max:120'],
+            'phone'      => ['nullable', 'string', 'max:40'],
+            'items'      => ['required', 'string'],
+            'payment'    => ['nullable', 'string', 'max:60'],
+            'total'      => ['required', 'string', 'max:60'],
+            'promo_code' => ['nullable', 'string', 'max:40'],
+            'note'       => ['nullable', 'string'],
         ]);
 
         if (!Schema::hasTable('orders')) {
@@ -52,6 +54,22 @@ class OrderController extends Controller
                 'ok'      => false,
                 'message' => 'Tabel orders belum dimigrasi.',
             ], 500);
+        }
+
+        $rawSubtotal = (int) preg_replace('/[^0-9]/', '', (string) $data['total']);
+        $promoCodeInput = $data['promo_code'] ?? $request->input('promo') ?? null;
+        $promoResult = AdminPromoController::redeemPromo($promoCodeInput, $rawSubtotal);
+
+        $finalNumericTotal = $promoResult['valid'] ? $promoResult['final_total'] : $rawSubtotal;
+        $formattedTotal = $promoResult['valid']
+            ? 'Rp' . number_format($finalNumericTotal, 0, ',', '.')
+            : $data['total'];
+
+        $noteWithPromo = trim((string) ($data['note'] ?? ''));
+        if ($promoResult['valid']) {
+            $cleanCode = strtoupper(trim((string) $promoCodeInput));
+            $promoInfo = 'Promo ' . $cleanCode . ' (-Rp' . number_format($promoResult['discount'], 0, ',', '.') . ')';
+            $noteWithPromo = $noteWithPromo !== '' ? ($noteWithPromo . ' | ' . $promoInfo) : $promoInfo;
         }
 
         $nextNumber = (DB::table('orders')->max('id') ?? 0) + 1;
@@ -64,29 +82,31 @@ class OrderController extends Controller
             'phone'      => $data['phone'] ?? '-',
             'items'      => $data['items'],
             'payment'    => $data['payment'] ?? 'QRIS',
-            'total'      => $data['total'],
+            'total'      => $formattedTotal,
             'status'     => 'Menunggu',
-            'note'       => $data['note'] ?? '',
+            'note'       => $noteWithPromo,
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        $numericTotal = (int) preg_replace('/[^0-9]/', '', (string) $data['total']);
-
         AdminCustomerController::syncFromActivity(
             $data['customer'],
             $data['phone'] ?? null,
-            $numericTotal,
+            $finalNumericTotal,
             true,
             null,
             null,
-            $data['note'] ?? null
+            $noteWithPromo
         );
 
         return response()->json([
-            'ok'      => true,
-            'code'    => $code,
-            'message' => 'Pesanan ' . $code . ' berhasil dikirim dan masuk ke antrean admin.',
+            'ok'               => true,
+            'code'             => $code,
+            'promo_applied'    => $promoResult['valid'],
+            'promo_message'    => $promoResult['message'],
+            'discount'         => $promoResult['discount'],
+            'final_total'      => $formattedTotal,
+            'message'          => 'Pesanan ' . $code . ' berhasil dikirim dan masuk ke antrean admin.',
         ]);
     }
 

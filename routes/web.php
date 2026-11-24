@@ -9,6 +9,7 @@ use App\Http\Controllers\AdminMenuController;
 use App\Http\Controllers\AdminInventoryController;
 use App\Http\Controllers\AdminReservationController;
 use App\Http\Controllers\AdminCustomerController;
+use App\Http\Controllers\AdminPromoController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -70,6 +71,8 @@ Route::post('/pesanan', [OrderController::class, 'store'])->name('pesanan.store'
 Route::get('/admin/login', [AdminAuthController::class, 'showLoginForm'])->name('admin.login');
 Route::post('/admin/login', [AdminAuthController::class, 'login'])->name('admin.login.submit');
 Route::post('/admin/logout', [AdminAuthController::class, 'logout'])->name('admin.logout');
+
+Route::post('/promo/validate', [AdminPromoController::class, 'validateCode'])->name('promo.validate');
 
 // Route area admin (terproteksi middleware admin.auth & izin fitur per role)
 Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function () {
@@ -152,7 +155,25 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/pelanggan/{id}', [AdminCustomerController::class, 'destroy'])
         ->middleware('admin.auth:pelanggan')
         ->name('pelanggan.destroy');
-    Route::view('/promo', 'admin.promo')->middleware('admin.auth:promo')->name('promo');
+    Route::get('/promo', [AdminPromoController::class, 'index'])
+        ->middleware('admin.auth:promo')
+        ->name('promo');
+
+    Route::post('/promo', [AdminPromoController::class, 'store'])
+        ->middleware('admin.auth:promo')
+        ->name('promo.store');
+
+    Route::put('/promo/{id}', [AdminPromoController::class, 'update'])
+        ->middleware('admin.auth:promo')
+        ->name('promo.update');
+
+    Route::patch('/promo/{id}/toggle', [AdminPromoController::class, 'toggleActive'])
+        ->middleware('admin.auth:promo')
+        ->name('promo.toggle');
+
+    Route::delete('/promo/{id}', [AdminPromoController::class, 'destroy'])
+        ->middleware('admin.auth:promo')
+        ->name('promo.destroy');
     Route::view('/catering-delivery', 'admin.catering')->middleware('admin.auth:catering')->name('catering');
     Route::view('/keuangan', 'admin.keuangan')->middleware('admin.auth:keuangan')->name('keuangan');
     Route::view('/laporan', 'admin.laporan')->middleware('admin.auth:laporan')->name('laporan');

@@ -68,6 +68,25 @@
                             <p class="checkout-item-sub">Memuat keranjang...</p>
                         </div>
 
+                        <!-- INPUT KODE PROMO -->
+                        <div style="margin:12px 0;padding:12px;border-radius:10px;border:1px solid #e6dfd1;background:#faf7f0;">
+                            <label for="promoCodeInput" style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:6px;">
+                                Kode Promo / Diskon
+                            </label>
+                            <div style="display:flex;gap:8px;align-items:center;">
+                                <input type="text" id="promoCodeInput" name="promo_code"
+                                    placeholder="Contoh: KUSANTARA10"
+                                    style="flex:1;padding:8px 12px;border-radius:8px;border:1px solid #d9ceba;background:#fff;text-transform:uppercase;font-weight:600;">
+                                <button type="button" id="applyPromoBtn" class="checkout-back-btn" style="padding:8px 14px;">
+                                    Pakai
+                                </button>
+                                <button type="button" id="clearPromoBtn" class="checkout-back-btn" style="display:none;padding:8px 10px;">
+                                    Batal
+                                </button>
+                            </div>
+                            <div id="promoFeedbackMsg" style="margin-top:6px;font-size:0.78rem;font-weight:600;"></div>
+                        </div>
+
                         <div class="checkout-summary-line">
                             <span>Subtotal</span>
                             <strong id="summarySubtotal">Rp0</strong>
@@ -79,6 +98,10 @@
                         <div class="checkout-summary-line" id="deliveryFeeRow">
                             <span>Ongkos Kirim</span>
                             <span id="summaryDelivery">Rp10.000</span>
+                        </div>
+                        <div class="checkout-summary-line" id="discountRow" style="display:none;color:#047857;font-weight:600;">
+                            <span id="discountLabel">Diskon Promo</span>
+                            <span id="summaryDiscount">-Rp0</span>
                         </div>
                         <div class="checkout-summary-total">
                             <span>Total Tagihan</span>
@@ -159,7 +182,7 @@
                         </div>
 
                         <div class="checkout-item-sub" id="dineInPaylaterNote" style="display:none; margin-bottom:12px;">
-                            * Layanan <strong>Dine-in</strong> menggunakan pembayaran langsung di kasir/meja (Kusantara
+                            Layanan <strong>Dine-in</strong> menggunakan pembayaran langsung di kasir/meja (Kusantara
                             PayLater khusus <em>Delivery</em> &amp; <em>Katering</em>).
                         </div>
 
@@ -207,6 +230,9 @@
 
             let currentLayanan = 'Delivery';
             let currentPayment = 'paylater';
+            let preDiscountTotal = 0;
+            let discountAmount = 0;
+            let appliedPromoCode = '';
             let grandTotal = 0;
 
             const paymentOptions = document.querySelectorAll('.payment-option');
@@ -214,6 +240,14 @@
             const paylaterOptionCard = document.getElementById('paylaterOptionCard');
             const paylaterSimBox = document.getElementById('paylaterSimBox');
             const dineInPaylaterNote = document.getElementById('dineInPaylaterNote');
+
+            const promoCodeInput = document.getElementById('promoCodeInput');
+            const applyPromoBtn = document.getElementById('applyPromoBtn');
+            const clearPromoBtn = document.getElementById('clearPromoBtn');
+            const promoFeedbackMsg = document.getElementById('promoFeedbackMsg');
+            const discountRow = document.getElementById('discountRow');
+            const discountLabel = document.getElementById('discountLabel');
+            const summaryDiscount = document.getElementById('summaryDiscount');
 
             function setPaymentMethod(method) {
                 currentPayment = method;
@@ -295,14 +329,120 @@
                     deliveryRowEl.style.display = currentLayanan === 'Delivery' ? 'flex' : 'none';
                 }
 
-                grandTotal = subtotal + tax + deliveryFee;
+                preDiscountTotal = subtotal + tax + deliveryFee;
+
+                if (discountAmount > preDiscountTotal) {
+                    discountAmount = preDiscountTotal;
+                }
+
+                grandTotal = Math.max(0, preDiscountTotal - discountAmount);
 
                 if (subtotalEl) subtotalEl.textContent = rupiah(subtotal);
                 if (taxEl) taxEl.textContent = rupiah(tax);
                 if (deliveryEl) deliveryEl.textContent = rupiah(deliveryFee);
+
+                if (discountRow && summaryDiscount && discountLabel) {
+                    if (appliedPromoCode && discountAmount > 0) {
+                        discountRow.style.display = 'flex';
+                        discountLabel.textContent = 'Diskon (' + appliedPromoCode + ')';
+                        summaryDiscount.textContent = '-' + rupiah(discountAmount);
+                    } else {
+                        discountRow.style.display = 'none';
+                        summaryDiscount.textContent = '-Rp0';
+                    }
+                }
+
                 if (grandTotalEl) grandTotalEl.textContent = rupiah(grandTotal);
 
                 updatePaylaterSimulation();
+            }
+
+            function resetPromoState(clearMessage) {
+                appliedPromoCode = '';
+                discountAmount = 0;
+                if (clearPromoBtn) clearPromoBtn.style.display = 'none';
+                if (clearMessage && promoFeedbackMsg) {
+                    promoFeedbackMsg.textContent = '';
+                }
+                renderOrderSummary();
+            }
+
+            if (applyPromoBtn) {
+                applyPromoBtn.addEventListener('click', function () {
+                    const code = (promoCodeInput ? promoCodeInput.value : '').trim().toUpperCase();
+                    const baseForPromo = preDiscountTotal > 0 ? preDiscountTotal : 152000;
+
+                    if (!code) {
+                        resetPromoState(false);
+                        if (promoFeedbackMsg) {
+                            promoFeedbackMsg.style.color = '#b91c1c';
+                            promoFeedbackMsg.textContent = 'Masukkan kode promo terlebih dahulu.';
+                        }
+                        return;
+                    }
+
+                    applyPromoBtn.disabled = true;
+                    applyPromoBtn.textContent = '...';
+
+                    fetch("{{ route('promo.validate') }}", {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                        },
+                        body: JSON.stringify({
+                            code: code,
+                            subtotal: baseForPromo
+                        })
+                    })
+                        .then(async function (res) {
+                            const data = await res.json();
+                            if (res.ok && data.ok) {
+                                appliedPromoCode = data.code || code;
+                                discountAmount = Math.max(0, Number(data.discount || 0));
+                                if (promoCodeInput) promoCodeInput.value = appliedPromoCode;
+                                if (clearPromoBtn) clearPromoBtn.style.display = 'inline-flex';
+                                if (promoFeedbackMsg) {
+                                    promoFeedbackMsg.style.color = '#047857';
+                                    promoFeedbackMsg.textContent = data.message || 'Kode promo berhasil diterapkan.';
+                                }
+                                renderOrderSummary();
+                            } else {
+                                resetPromoState(false);
+                                if (promoFeedbackMsg) {
+                                    promoFeedbackMsg.style.color = '#b91c1c';
+                                    promoFeedbackMsg.textContent = data.message || 'Kode promo tidak dapat digunakan.';
+                                }
+                            }
+                        })
+                        .catch(function () {
+                            resetPromoState(false);
+                            if (promoFeedbackMsg) {
+                                promoFeedbackMsg.style.color = '#b91c1c';
+                                promoFeedbackMsg.textContent = 'Gagal memvalidasi kode promo.';
+                            }
+                        })
+                        .finally(function () {
+                            applyPromoBtn.disabled = false;
+                            applyPromoBtn.textContent = 'Pakai';
+                        });
+                });
+            }
+
+            if (clearPromoBtn) {
+                clearPromoBtn.addEventListener('click', function () {
+                    if (promoCodeInput) promoCodeInput.value = '';
+                    resetPromoState(true);
+                });
+            }
+
+            if (promoCodeInput) {
+                promoCodeInput.addEventListener('input', function () {
+                    if (appliedPromoCode && promoCodeInput.value.trim().toUpperCase() !== appliedPromoCode) {
+                        resetPromoState(true);
+                    }
+                });
             }
 
             function updatePaylaterSimulation() {
@@ -316,7 +456,7 @@
                 const monthlyRate = parseFloat(opt.getAttribute('data-rate') || '0') || 0;
                 const adminFee = parseInt(opt.getAttribute('data-admin') || '0', 10) || 0;
 
-                const basePrincipal = grandTotal > 0 ? grandTotal : 152000;
+                const basePrincipal = grandTotal > 0 ? grandTotal : (preDiscountTotal > 0 ? preDiscountTotal : 152000);
                 const totalInterest = Math.round(basePrincipal * monthlyRate * months);
                 const totalPaylater = basePrincipal + totalInterest + adminFee;
                 const monthlyInstallment = Math.ceil(totalPaylater / months);
@@ -392,12 +532,17 @@
                         ? 'Kusantara PayLater — ' + tenorLabel + ' (' + document.getElementById('paylaterInstallmentText').textContent + ')'
                         : 'Bayar Langsung (Tunai / QRIS / EDC)';
 
+                    const effectiveTotal = grandTotal > 0 ? grandTotal : 152000;
+
                     modalBodyEl.innerHTML =
                         '<div><strong>Pemesan:</strong> ' + nama + ' (' + hp + ')</div>' +
                         (currentLayanan !== 'Dine-in' ? '<div><strong>Alamat:</strong> ' + alamat + '</div>' : '') +
                         '<div><strong>Layanan:</strong> ' + currentLayanan + '</div>' +
                         '<div><strong>Metode:</strong> ' + metodeLabel + '</div>' +
-                        '<div><strong>Total Tagihan:</strong> ' + rupiah(grandTotal) + '</div>';
+                        (appliedPromoCode && discountAmount > 0
+                            ? '<div><strong>Promo (' + appliedPromoCode + '):</strong> -' + rupiah(discountAmount) + '</div>'
+                            : '') +
+                        '<div><strong>Total Tagihan:</strong> ' + rupiah(effectiveTotal) + '</div>';
 
                     modalEl.classList.add('is-open');
                 });
@@ -435,11 +580,9 @@
                         paymentLabel = 'PayLater (' + tenorLabel + ')';
                     }
 
-                    // Samakan label layanan agar pas dengan filter admin (Dine-in, Takeaway, Delivery, Catering)
                     const normalizedService = currentLayanan === 'Katering' ? 'Catering' : currentLayanan;
-
-                    const csrfTokenMeta = document.querySelector('meta[name="csrf-token"]');
-                    const csrfToken = csrfTokenMeta ? csrfTokenMeta.getAttribute('content') : '{{ csrf_token() }}';
+                    const totalToSend = grandTotal > 0 ? grandTotal : 152000;
+                    const typedPromo = (promoCodeInput ? promoCodeInput.value : '').trim().toUpperCase();
 
                     confirmOrderBtn.disabled = true;
                     confirmOrderBtn.textContent = 'Menyimpan...';
@@ -457,7 +600,8 @@
                             phone: hp,
                             items: itemsSummary,
                             payment: paymentLabel,
-                            total: rupiah(grandTotal > 0 ? grandTotal : 152000),
+                            total: rupiah(totalToSend),
+                            promo_code: appliedPromoCode || typedPromo || null,
                             note: normalizedService !== 'Dine-in' ? ('Alamat: ' + alamat) : 'Pesanan Dine-in'
                         })
                     })
@@ -469,6 +613,8 @@
                         })
                         .then(function (data) {
                             localStorage.removeItem(CART_KEY);
+                            resetPromoState(true);
+                            if (promoCodeInput) promoCodeInput.value = '';
                             modalEl.classList.remove('is-open');
                             renderOrderSummary();
                             alert(data.message || ('Pesanan ' + (data.code || '') + ' berhasil dikirim ke admin!'));

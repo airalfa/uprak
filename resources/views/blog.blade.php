@@ -37,6 +37,7 @@
                         <a href="#bab-tokoh" class="ed-toc-link"><span>03</span> Arsitek &amp; Lembaga Moneter</a>
                         <a href="#bab-analisis" class="ed-toc-link"><span>04</span> Bedah Fakta vs Dampak</a>
                         <a href="#bab-kusantara" class="ed-toc-link"><span>05</span> Adopsi di PT. Kusantara</a>
+                        <a href="#bab-artikel-baru" class="ed-toc-link"><span>06</span> Artikel Terbaru</a>
                     </nav>
                 </aside>
             </div>
@@ -327,6 +328,180 @@
         </div>
     </section>
 
+<!-- 7. TAMBAHAN: ARTIKEL TERBARU DARI DATABASE -->
+    @php
+        $extraPosts = $posts ?? [];
+    @endphp
+    <section class="ed-section ed-bg-warm" id="bab-artikel-baru">
+        <div class="ed-container">
+            <div class="ed-section-head">
+                <span class="ed-kicker">BAGIAN VI — PUSTAKA ARTIKEL</span>
+                <h2 class="ed-h2">Artikel &amp; Catatan Terbaru</h2>
+                <p class="ed-subtext">Klik tombol baca untuk membuka isi artikel secara lengkap.</p>
+            </div>
+
+            @if (count($extraPosts) > 0)
+                <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px;">
+                    @foreach ($extraPosts as $post)
+                        <article class="public-post-card"
+                                 data-title="{{ e($post['title']) }}"
+                                 data-post-category="{{ e($post['category']) }}"
+                                 data-author="{{ e($post['author']) }}"
+                                 data-date="{{ e($post['published_at']) }}"
+                                 data-content="{{ e($post['content']) }}"
+                                 style="background:#fff;border:1px solid #e6dfd1;border-radius:14px;padding:18px;display:flex;flex-direction:column;justify-content:space-between;gap:14px;">
+                            <div>
+                                <div style="display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:0.78rem;color:#6b7280;margin-bottom:8px;">
+                                    <span style="padding:3px 10px;border-radius:999px;background:#fef3c7;color:#92400e;font-weight:700;">
+                                        {{ $post['category'] }}
+                                    </span>
+                                    <span>{{ $post['published_at'] }}</span>
+                                </div>
+
+                                <h3 style="font-size:1.1rem;font-weight:800;margin:0 0 8px;line-height:1.35;">
+                                    {{ $post['title'] }}
+                                </h3>
+
+                                <p style="margin:0;font-size:0.88rem;color:#4b5563;line-height:1.55;">
+                                    {{ $post['excerpt'] }}
+                                </p>
+                            </div>
+
+                            <div style="display:flex;justify-content:space-between;align-items:center;padding-top:10px;border-top:1px solid #f1ece1;">
+                                <span style="font-size:0.78rem;color:#6b7280;font-weight:600;">
+                                    {{ $post['author'] }}
+                                </span>
+
+                                <button type="button" class="btn-read-post"
+                                        style="padding:7px 13px;border-radius:8px;border:1px solid #d9ceba;background:#faf7f0;font-weight:700;font-size:0.82rem;cursor:pointer;">
+                                    Baca Artikel <i class="fas fa-arrow-right"></i>
+                                </button>
+                            </div>
+                        </article>
+                    @endforeach
+                </div>
+            @else
+                <div style="padding:24px;border-radius:14px;background:#fff;border:1px solid #e6dfd1;text-align:center;color:#6b7280;font-size:0.9rem;">
+                    Belum ada artikel tambahan yang diterbitkan.
+                </div>
+            @endif
+        </div>
+    </section>
+
+    <!-- MODAL BACA ARTIKEL LENGKAP -->
+    <div id="readPostModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;padding:20px;overflow-y:auto;align-items:center;justify-content:center;">
+        <div style="background:#fff;max-width:680px;width:100%;border-radius:16px;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,0.2);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px;">
+                <div>
+                    <div id="readerMeta" style="font-size:0.8rem;color:#6b7280;font-weight:600;margin-bottom:6px;"></div>
+                    <h2 id="readerTitle" style="font-size:1.35rem;font-weight:800;margin:0;color:#111827;"></h2>
+                </div>
+                <button type="button" id="closeReadPostModal"
+                        style="background:none;border:none;font-size:1.5rem;line-height:1;cursor:pointer;color:#6b7280;">&times;</button>
+            </div>
+
+            <div id="readerContent" style="font-size:0.95rem;line-height:1.75;color:#374151;white-space:pre-line;max-height:60vh;overflow-y:auto;"></div>
+
+            <div style="display:flex;justify-content:flex-end;margin-top:18px;">
+                <button type="button" id="closeReadPostBtn"
+                        style="padding:8px 16px;border-radius:8px;border:1px solid #d1d5db;background:#fff;font-weight:700;cursor:pointer;">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL BACA ARTIKEL LENGKAP -->
+    <div id="readPostModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;padding:20px;overflow-y:auto;align-items:center;justify-content:center;">
+        <div style="background:#fff;max-width:680px;width:100%;border-radius:16px;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,0.2);">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:12px;margin-bottom:12px;">
+                <div>
+                    <div id="readerMeta" style="font-size:0.8rem;color:#6b7280;font-weight:600;margin-bottom:6px;"></div>
+                    <h2 id="readerTitle" style="font-size:1.35rem;font-weight:800;margin:0;color:#111827;"></h2>
+                </div>
+                <button type="button" id="closeReadPostModal"
+                        style="background:none;border:none;font-size:1.5rem;line-height:1;cursor:pointer;color:#6b7280;">&times;</button>
+            </div>
+
+            <div id="readerContent" style="font-size:0.95rem;line-height:1.75;color:#374151;white-space:pre-line;max-height:60vh;overflow-y:auto;"></div>
+
+            <div style="display:flex;justify-content:flex-end;margin-top:18px;">
+                <button type="button" id="closeReadPostBtn"
+                        style="padding:8px 16px;border-radius:8px;border:1px solid #d1d5db;background:#fff;font-weight:700;cursor:pointer;">
+                    Tutup
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- MODAL TAMBAH ARTIKEL -->
+    <div id="addPublicPostModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.55);z-index:9999;padding:20px;overflow-y:auto;align-items:center;justify-content:center;">
+        <div style="background:#fff;max-width:580px;width:100%;border-radius:16px;padding:24px;box-shadow:0 20px 50px rgba(0,0,0,0.2);">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;">
+                <h2 style="font-size:1.2rem;font-weight:800;margin:0;">Tambah Artikel Baru</h2>
+                <button type="button" id="closeAddPublicPostModal"
+                        style="background:none;border:none;font-size:1.5rem;line-height:1;cursor:pointer;color:#6b7280;">&times;</button>
+            </div>
+
+            <form action="{{ route('blog.public.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="redirect_to" value="blog">
+
+                <div style="display:grid;gap:12px;">
+                    <div>
+                        <label style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Judul Artikel</label>
+                        <input type="text" name="title" required
+                               style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #d1d5db;">
+                    </div>
+
+                    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;">
+                        <div>
+                            <label style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Kategori</label>
+                            <input type="text" name="category" value="Kuliner Nusantara" required
+                                   style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #d1d5db;">
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Penulis</label>
+                            <input type="text" name="author" value="Tim Kusantara"
+                                   style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #d1d5db;">
+                        </div>
+                        <div>
+                            <label style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Status</label>
+                            <select name="status"
+                                    style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #d1d5db;background:#fff;">
+                                <option value="Terbit">Terbit</option>
+                                <option value="Draft">Draft</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Ringkasan Singkat (Opsional)</label>
+                        <textarea name="excerpt" rows="2"
+                                  style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #d1d5db;"></textarea>
+                    </div>
+
+                    <div>
+                        <label style="display:block;font-size:0.82rem;font-weight:700;margin-bottom:4px;">Isi Artikel</label>
+                        <textarea name="content" rows="5" required
+                                  style="width:100%;padding:9px 12px;border-radius:8px;border:1px solid #d1d5db;"></textarea>
+                    </div>
+                </div>
+
+                <div style="display:flex;justify-content:flex-end;gap:8px;margin-top:16px;">
+                    <button type="button" id="cancelAddPublicPostBtn"
+                            style="padding:8px 14px;border-radius:8px;border:1px solid #d1d5db;background:#fff;font-weight:700;cursor:pointer;">
+                        Batal
+                    </button>
+                    <button type="submit"
+                            style="padding:8px 16px;border-radius:8px;border:none;background:#1e293b;color:#fff;font-weight:700;cursor:pointer;">
+                        Simpan Artikel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
 </div>
 @endsection
 
@@ -477,6 +652,53 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         });
     }
+
+    // 4. Modal Baca & Tambah Artikel Baru
+    const readModal = document.getElementById('readPostModal');
+    const readerTitle = document.getElementById('readerTitle');
+    const readerMeta = document.getElementById('readerMeta');
+    const readerContent = document.getElementById('readerContent');
+
+    document.querySelectorAll('.btn-read-post').forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            const card = btn.closest('.public-post-card');
+            if (!card || !readModal) return;
+
+            readerTitle.textContent = card.getAttribute('data-title') || '';
+            readerMeta.textContent =
+                (card.getAttribute('data-post-category') || '') +
+                ' • Oleh ' + (card.getAttribute('data-author') || 'Tim Kusantara') +
+                ' • ' + (card.getAttribute('data-date') || '');
+            readerContent.textContent = card.getAttribute('data-content') || '';
+
+            readModal.style.display = 'flex';
+        });
+    });
+
+    function closeReader() {
+        if (readModal) readModal.style.display = 'none';
+    }
+
+    document.getElementById('closeReadPostModal')?.addEventListener('click', closeReader);
+    document.getElementById('closeReadPostBtn')?.addEventListener('click', closeReader);
+    readModal?.addEventListener('click', function (e) {
+        if (e.target === readModal) closeReader();
+    });
+
+    const addModal = document.getElementById('addPublicPostModal');
+    function openAddModal() {
+        if (addModal) addModal.style.display = 'flex';
+    }
+    function closeAddModal() {
+        if (addModal) addModal.style.display = 'none';
+    }
+
+    document.getElementById('openPublicAddPostModal')?.addEventListener('click', openAddModal);
+    document.getElementById('closeAddPublicPostModal')?.addEventListener('click', closeAddModal);
+    document.getElementById('cancelAddPublicPostBtn')?.addEventListener('click', closeAddModal);
+    addModal?.addEventListener('click', function (e) {
+        if (e.target === addModal) closeAddModal();
+    });
 });
 </script>
 @endpush

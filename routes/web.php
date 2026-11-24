@@ -14,7 +14,10 @@ use App\Http\Controllers\AdminCateringDeliveryController;
 use App\Http\Controllers\AdminFinanceController;
 use App\Http\Controllers\AdminReportController;
 use App\Http\Controllers\AdminWebsiteController;
+use App\Http\Controllers\AdminBlogController;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Str;
 
 Route::get('/', function () {
     return view('dashboard');
@@ -31,8 +34,43 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::get('/blog', function () {
-    return view('blog');
+    $table = AdminBlogController::resolveTable();
+    $posts = [];
+
+    if ($table) {
+        $rows = DB::table($table)
+            ->orderByDesc('id')
+            ->get();
+
+        foreach ($rows as $r) {
+            $status = strtolower(trim((string) ($r->status ?? 'Terbit')));
+            if (in_array($status, ['draft', 'konsep', 'nonaktif'], true)) {
+                continue;
+            }
+
+            $title = (string) ($r->title ?? $r->judul ?? 'Artikel');
+            $content = (string) ($r->content ?? $r->isi ?? $r->body ?? '');
+            $excerpt = (string) ($r->excerpt ?? $r->ringkasan ?? Str::limit(strip_tags($content), 140));
+
+            $posts[] = [
+                'id'           => $r->id,
+                'title'        => $title,
+                'slug'         => (string) ($r->slug ?? Str::slug($title)),
+                'category'     => (string) ($r->category ?? $r->kategori ?? 'Kuliner Nusantara'),
+                'author'       => (string) ($r->author ?? $r->penulis ?? 'Tim Kusantara'),
+                'excerpt'      => $excerpt,
+                'content'      => $content,
+                'published_at' => !empty($r->published_at)
+                    ? substr((string) $r->published_at, 0, 10)
+                    : (!empty($r->created_at) ? substr((string) $r->created_at, 0, 10) : now()->toDateString()),
+            ];
+        }
+    }
+
+    return view('blog', compact('posts'));
 })->name('blog.index');
+
+Route::post('/blog', [AdminBlogController::class, 'store'])->name('blog.public.store');
 
 Route::get('/katalog', [MenuController::class, 'index'])->name('katalog.index');
 
@@ -125,6 +163,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/inventaris/{id}', [AdminInventoryController::class, 'destroy'])
         ->middleware('admin.auth:inventaris')
         ->name('inventaris.destroy');
+
     Route::get('/reservasi', [AdminReservationController::class, 'index'])
         ->middleware('admin.auth:reservasi')
         ->name('reservasi');
@@ -144,6 +183,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/reservasi/{id}', [AdminReservationController::class, 'destroy'])
         ->middleware('admin.auth:reservasi')
         ->name('reservasi.destroy');
+
     Route::get('/pelanggan', [AdminCustomerController::class, 'index'])
         ->middleware('admin.auth:pelanggan')
         ->name('pelanggan');
@@ -159,6 +199,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/pelanggan/{id}', [AdminCustomerController::class, 'destroy'])
         ->middleware('admin.auth:pelanggan')
         ->name('pelanggan.destroy');
+
     Route::get('/promo', [AdminPromoController::class, 'index'])
         ->middleware('admin.auth:promo')
         ->name('promo');
@@ -178,6 +219,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/promo/{id}', [AdminPromoController::class, 'destroy'])
         ->middleware('admin.auth:promo')
         ->name('promo.destroy');
+
     Route::get('/catering-delivery', [AdminCateringDeliveryController::class, 'index'])
         ->middleware('admin.auth:catering')
         ->name('catering');
@@ -197,6 +239,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/catering-delivery/{id}', [AdminCateringDeliveryController::class, 'destroy'])
         ->middleware('admin.auth:catering')
         ->name('catering.destroy');
+
     Route::get('/keuangan', [AdminFinanceController::class, 'index'])
         ->middleware('admin.auth:keuangan')
         ->name('keuangan');
@@ -216,9 +259,11 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/keuangan/{id}', [AdminFinanceController::class, 'destroy'])
         ->middleware('admin.auth:keuangan')
         ->name('keuangan.destroy');
+
     Route::get('/laporan', [AdminReportController::class, 'index'])
         ->middleware('admin.auth:laporan')
         ->name('laporan');
+
     Route::get('/kelola-website', [AdminWebsiteController::class, 'index'])
         ->middleware('admin.auth:website')
         ->name('website');
@@ -226,7 +271,27 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::put('/kelola-website', [AdminWebsiteController::class, 'update'])
         ->middleware('admin.auth:website')
         ->name('website.update');
-    Route::view('/blog', 'admin.blog')->middleware('admin.auth:blog')->name('blog');
+
+    Route::get('/blog', [AdminBlogController::class, 'index'])
+        ->middleware('admin.auth:blog')
+        ->name('blog');
+
+    Route::post('/blog', [AdminBlogController::class, 'store'])
+        ->middleware('admin.auth:blog')
+        ->name('blog.store');
+
+    Route::put('/blog/{id}', [AdminBlogController::class, 'update'])
+        ->middleware('admin.auth:blog')
+        ->name('blog.update');
+
+    Route::patch('/blog/{id}/toggle-status', [AdminBlogController::class, 'toggleStatus'])
+        ->middleware('admin.auth:blog')
+        ->name('blog.toggle-status');
+
+    Route::delete('/blog/{id}', [AdminBlogController::class, 'destroy'])
+        ->middleware('admin.auth:blog')
+        ->name('blog.destroy');
+
     Route::view('/ulasan', 'admin.ulasan')->middleware('admin.auth:ulasan')->name('ulasan');
     Route::view('/media', 'admin.media')->middleware('admin.auth:media')->name('media');
     Route::view('/karyawan', 'admin.karyawan')->middleware('admin.auth:karyawan')->name('karyawan');

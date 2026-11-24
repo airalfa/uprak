@@ -19,6 +19,7 @@ use App\Http\Controllers\AdminReviewController;
 use App\Http\Controllers\AdminMediaController;
 use App\Http\Controllers\AdminEmployeeController;
 use App\Http\Controllers\AdminRolePermissionController;
+use App\Http\Controllers\AdminSettingController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Str;
@@ -390,7 +391,17 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/hak-akses/{id}', [AdminRolePermissionController::class, 'destroy'])
         ->middleware('admin.auth:hak_akses')
         ->name('hak_akses.destroy');
-    Route::view('/pengaturan', 'admin.pengaturan')->middleware('admin.auth:pengaturan')->name('pengaturan');
+    Route::get('/pengaturan', [AdminSettingController::class, 'index'])
+        ->middleware('admin.auth:pengaturan')
+        ->name('pengaturan');
+
+    Route::put('/pengaturan', [AdminSettingController::class, 'update'])
+        ->middleware('admin.auth:pengaturan')
+        ->name('pengaturan.update');
+
+    Route::post('/pengaturan/reset', [AdminSettingController::class, 'reset'])
+        ->middleware('admin.auth:pengaturan')
+        ->name('pengaturan.reset');
 });
 
 require __DIR__ . '/auth.php';

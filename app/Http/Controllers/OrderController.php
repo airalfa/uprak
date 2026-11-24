@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Controllers\AdminCustomerController;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
@@ -69,6 +70,18 @@ class OrderController extends Controller
             'created_at' => now(),
             'updated_at' => now(),
         ]);
+
+        $numericTotal = (int) preg_replace('/[^0-9]/', '', (string) $data['total']);
+
+        AdminCustomerController::syncFromActivity(
+            $data['customer'],
+            $data['phone'] ?? null,
+            $numericTotal,
+            true,
+            null,
+            null,
+            $data['note'] ?? null
+        );
 
         return response()->json([
             'ok'      => true,

@@ -8,6 +8,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\AdminMenuController;
 use App\Http\Controllers\AdminInventoryController;
 use App\Http\Controllers\AdminReservationController;
+use App\Http\Controllers\AdminCustomerController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -117,7 +118,7 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/inventaris/{id}', [AdminInventoryController::class, 'destroy'])
         ->middleware('admin.auth:inventaris')
         ->name('inventaris.destroy');
-Route::get('/reservasi', [AdminReservationController::class, 'index'])
+    Route::get('/reservasi', [AdminReservationController::class, 'index'])
         ->middleware('admin.auth:reservasi')
         ->name('reservasi');
 
@@ -135,7 +136,22 @@ Route::get('/reservasi', [AdminReservationController::class, 'index'])
 
     Route::delete('/reservasi/{id}', [AdminReservationController::class, 'destroy'])
         ->middleware('admin.auth:reservasi')
-        ->name('reservasi.destroy');    Route::view('/pelanggan', 'admin.pelanggan')->middleware('admin.auth:pelanggan')->name('pelanggan');
+        ->name('reservasi.destroy');
+    Route::get('/pelanggan', [AdminCustomerController::class, 'index'])
+        ->middleware('admin.auth:pelanggan')
+        ->name('pelanggan');
+
+    Route::post('/pelanggan', [AdminCustomerController::class, 'store'])
+        ->middleware('admin.auth:pelanggan')
+        ->name('pelanggan.store');
+
+    Route::put('/pelanggan/{id}', [AdminCustomerController::class, 'update'])
+        ->middleware('admin.auth:pelanggan')
+        ->name('pelanggan.update');
+
+    Route::delete('/pelanggan/{id}', [AdminCustomerController::class, 'destroy'])
+        ->middleware('admin.auth:pelanggan')
+        ->name('pelanggan.destroy');
     Route::view('/promo', 'admin.promo')->middleware('admin.auth:promo')->name('promo');
     Route::view('/catering-delivery', 'admin.catering')->middleware('admin.auth:catering')->name('catering');
     Route::view('/keuangan', 'admin.keuangan')->middleware('admin.auth:keuangan')->name('keuangan');

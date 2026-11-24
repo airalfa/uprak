@@ -10,6 +10,7 @@ use App\Http\Controllers\AdminInventoryController;
 use App\Http\Controllers\AdminReservationController;
 use App\Http\Controllers\AdminCustomerController;
 use App\Http\Controllers\AdminPromoController;
+use App\Http\Controllers\AdminCateringDeliveryController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -174,8 +175,25 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
     Route::delete('/promo/{id}', [AdminPromoController::class, 'destroy'])
         ->middleware('admin.auth:promo')
         ->name('promo.destroy');
-    Route::view('/catering-delivery', 'admin.catering')->middleware('admin.auth:catering')->name('catering');
-    Route::view('/keuangan', 'admin.keuangan')->middleware('admin.auth:keuangan')->name('keuangan');
+Route::get('/catering-delivery', [AdminCateringDeliveryController::class, 'index'])
+        ->middleware('admin.auth:catering')
+        ->name('catering');
+
+    Route::post('/catering-delivery', [AdminCateringDeliveryController::class, 'store'])
+        ->middleware('admin.auth:catering')
+        ->name('catering.store');
+
+    Route::put('/catering-delivery/{id}', [AdminCateringDeliveryController::class, 'update'])
+        ->middleware('admin.auth:catering')
+        ->name('catering.update');
+
+    Route::patch('/catering-delivery/{id}/status', [AdminCateringDeliveryController::class, 'updateStatus'])
+        ->middleware('admin.auth:catering')
+        ->name('catering.status');
+
+    Route::delete('/catering-delivery/{id}', [AdminCateringDeliveryController::class, 'destroy'])
+        ->middleware('admin.auth:catering')
+        ->name('catering.destroy');    Route::view('/keuangan', 'admin.keuangan')->middleware('admin.auth:keuangan')->name('keuangan');
     Route::view('/laporan', 'admin.laporan')->middleware('admin.auth:laporan')->name('laporan');
     Route::view('/kelola-website', 'admin.website')->middleware('admin.auth:website')->name('website');
     Route::view('/blog', 'admin.blog')->middleware('admin.auth:blog')->name('blog');

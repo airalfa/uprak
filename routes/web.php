@@ -5,6 +5,7 @@ use App\Http\Controllers\MenuController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\AdminAuthController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\AdminMenuController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -79,7 +80,22 @@ Route::middleware('admin.auth')->prefix('admin')->name('admin.')->group(function
         ->middleware('admin.auth:pesanan')
         ->name('pesanan.status');
 
-    Route::view('/menu', 'admin.menu')->middleware('admin.auth:menu')->name('menu');
+    Route::get('/menu', [AdminMenuController::class, 'index'])
+        ->middleware('admin.auth:menu')
+        ->name('menu');
+
+    Route::post('/menu', [AdminMenuController::class, 'store'])
+        ->middleware('admin.auth:menu')
+        ->name('menu.store');
+
+    Route::put('/menu/{id}', [AdminMenuController::class, 'update'])
+        ->middleware('admin.auth:menu')
+        ->name('menu.update');
+
+    Route::delete('/menu/{id}', [AdminMenuController::class, 'destroy'])
+        ->middleware('admin.auth:menu')
+        ->name('menu.destroy');
+
     Route::view('/inventaris', 'admin.inventaris')->middleware('admin.auth:inventaris')->name('inventaris');
     Route::view('/reservasi', 'admin.reservasi')->middleware('admin.auth:reservasi')->name('reservasi');
     Route::view('/pelanggan', 'admin.pelanggan')->middleware('admin.auth:pelanggan')->name('pelanggan');

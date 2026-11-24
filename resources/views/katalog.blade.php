@@ -73,21 +73,25 @@
                     $namaFile = $fotoMenu[$menuKey] ?? null;
                     $posisiClass = $menuKey === 'es cendol dawet' ? 'pos-cendol' : '';
 
-                    // Cek file yang tersedia sebagai fallback utama (backgroud.jpg sesuai di folder images/)
+                    // Fallback utama tetap di root public/images/backgroud.jpg
                     $fallbackImg = file_exists(public_path('images/backgroud.jpg'))
                         ? asset('images/' . rawurlencode('backgroud.jpg'))
-                        : asset('images/' . rawurlencode('nasi liwet.jpg'));
+                        : asset('images/katalog/' . rawurlencode('nasi liwet.jpg'));
 
-                    if ($namaFile && file_exists(public_path('images/' . $namaFile))) {
-                        $img = asset('images/' . rawurlencode($namaFile));
+                    if ($namaFile && file_exists(public_path('images/katalog/' . $namaFile))) {
+                        $img = asset('images/katalog/' . rawurlencode($namaFile));
                     } elseif (!empty($menu->image)) {
                         $cleanMenuImg = ltrim($menu->image, '/');
+                        $baseName = basename($cleanMenuImg);
+
                         if (\Illuminate\Support\Str::startsWith($menu->image, ['http://', 'https://'])) {
                             $img = $menu->image;
                         } elseif (file_exists(public_path($cleanMenuImg))) {
                             $img = asset($cleanMenuImg);
-                        } elseif (file_exists(public_path('images/' . basename($cleanMenuImg)))) {
-                            $img = asset('images/' . rawurlencode(basename($cleanMenuImg)));
+                        } elseif (file_exists(public_path('images/katalog/' . $baseName))) {
+                            $img = asset('images/katalog/' . rawurlencode($baseName));
+                        } elseif (file_exists(public_path('images/' . $baseName))) {
+                            $img = asset('images/' . rawurlencode($baseName));
                         } else {
                             $img = $fallbackImg;
                         }

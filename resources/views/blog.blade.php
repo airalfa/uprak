@@ -138,7 +138,7 @@
                 <!-- Tokoh 1 -->
                 <article class="ed-profile-row ed-reveal">
                     <figure class="ed-portrait">
-                        <img src="{{ asset('images/tokoh-margono.jpeg') }}"
+                        <img src="{{ asset('images/blog/tokoh-margono.jpeg') }}"
                              alt="R. M. Margono Djojohadikusumo"
                              onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Margono+Djojohadikusumo&background=132238&color=E5C17B&size=400'">
                         <figcaption>Arsip Nasional RI / Wikimedia Commons</figcaption>
@@ -159,7 +159,7 @@
                 <!-- Tokoh 2 -->
                 <article class="ed-profile-row ed-reverse ed-reveal">
                     <figure class="ed-portrait">
-                        <img src="{{ asset('images/tokoh-sjafruddin.jpeg') }}"
+                        <img src="{{ asset('images/blog/tokoh-sjafruddin.jpeg') }}"
                              alt="Mr. Sjafruddin Prawiranegara"
                              onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Sjafruddin+Prawiranegara&background=132238&color=E5C17B&size=400'">
                         <figcaption>Arsip Museum Bank Indonesia (bi.go.id)</figcaption>
@@ -180,7 +180,7 @@
                 <!-- Tokoh 3 -->
                 <article class="ed-profile-row ed-reveal">
                     <figure class="ed-portrait">
-                        <img src="{{ asset('images/tokoh-wirjaatmadja.jpeg') }}"
+                        <img src="{{ asset('images/blog/tokoh-wirjaatmadja.jpeg') }}"
                              alt="Raden Bei Aria Wirjaatmadja"
                              onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name=Aria+Wirjaatmadja&background=132238&color=E5C17B&size=400'">
                         <figcaption>Arsip Museum BRI Purwokerto</figcaption>

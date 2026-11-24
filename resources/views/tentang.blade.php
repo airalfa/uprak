@@ -7,7 +7,7 @@
 
         <!-- 1. HERO BANNER -->
         <section class="about-hero">
-            <img src="{{ asset('images/main-about.png') }}" alt="Restoran PT. Kusantara" class="about-hero-bg"
+            <img src="{{ asset('images/tentang/main-about.png') }}" alt="Restoran PT. Kusantara" class="about-hero-bg"
                 onerror="this.style.display='none'">
 
             <div class="about-hero-overlay">
@@ -32,7 +32,7 @@
             <div class="about-container">
                 <div class="about-split-grid">
                     <div class="about-photo-frame">
-                        <img src="{{ asset('images/rempah_nusantara.png') }}" alt="Rempah Khas Nusantara"
+                        <img src="{{ asset('images/tentang/rempah_nusantara.png') }}" alt="Rempah Khas Nusantara"
                             onerror="this.src='https://images.unsplash.com/photo-1596040033229-a9821ebd058d?auto=format&fit=crop&w=900&q=80'">
                     </div>
 
@@ -70,7 +70,7 @@
                     </div>
 
                     <div class="about-photo-frame">
-                        <img src="{{ asset('images/interior_restoran.png') }}" alt="Interior Restoran PT. Kusantara"
+                        <img src="{{ asset('images/tentang/interior_restoran.png') }}" alt="Interior Restoran PT. Kusantara"
                             onerror="this.src='https://images.unsplash.com/photo-1517248135467-4c7edcad34c4?auto=format&fit=crop&w=900&q=80'">
                     </div>
                 </div>
@@ -173,32 +173,32 @@
                         [
                             'nama' => 'M. Airlangga Alfarisi',
                             'posisi' => 'CEO / Direktur Utama',
-                            'foto' => 'images/tim/anggota-1.jpeg',
+                            'foto' => 'images/tentang/tim/anggota-1.jpeg',
                         ],
                         [
                             'nama' => 'Evan Kusumah Setiawan',
                             'posisi' => 'Product Manager & IT',
-                            'foto' => 'images/tim/anggota-2.jpeg',
+                            'foto' => 'images/tentang/tim/anggota-2.jpeg',
                         ],
                         [
                             'nama' => 'Adly Radithya Hamdani',
                             'posisi' => 'Sales & Marketing',
-                            'foto' => 'images/tim/anggota-3.jpeg',
+                            'foto' => 'images/tentang/tim/anggota-3.jpeg',
                         ],
                         [
                             'nama' => 'Gilang Aditya Pratama',
                             'posisi' => 'Product Manager & Customer Service',
-                            'foto' => 'images/tim/anggota-4.jpeg',
+                            'foto' => 'images/tentang/tim/anggota-4.jpeg',
                         ],
                         [
                             'nama' => 'Irfan Ainul Yaqin',
                             'posisi' => 'Finance & Accounting',
-                            'foto' => 'images/tim/anggota-5.jpeg',
+                            'foto' => 'images/tentang/tim/anggota-5.jpeg',
                         ],
                         [
                             'nama' => 'Radhythia Ardian Ilham G. N.',
                             'posisi' => 'COO / Operasional',
-                            'foto' => 'images/tim/anggota-6.jpeg',
+                            'foto' => 'images/tentang/tim/anggota-6.jpeg',
                         ],
                     ];
                 @endphp

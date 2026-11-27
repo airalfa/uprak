@@ -17,7 +17,7 @@
                 <a href="/katalog" class="{{ request()->is('katalog*') ? 'active' : '' }}">Katalog</a>
             </li>
             <li>
-                <a href="/bukti-beriman" class="{{ request()->is('bukti-beriman*') ? 'active' : '' }}">Bukti Beriman</a>
+                <a href="/bukti-beriman" class="{{ request()->is('bukti-beriman*') ? 'active' : '' }}">Bukti Beriman & Isu</a>
             </li>
             <li>
                 <a href="/blog" class="{{ request()->is('blog*') ? 'active' : '' }}">

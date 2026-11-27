@@ -5,6 +5,9 @@
 @section('content')
 @php
     $menus = $menus ?? [];
+    $fallbackAdminImg = file_exists(public_path('images/backgroud.jpg'))
+        ? asset('images/' . rawurlencode('backgroud.jpg'))
+        : '';
 @endphp
 
 <div class="admin-page-head">
@@ -81,6 +84,9 @@
                             @if (!empty($item['image_url']))
                                 <img src="{{ $item['image_url'] }}"
                                      alt="{{ $item['name'] }}"
+                                     @if ($fallbackAdminImg !== '')
+                                         onerror="this.onerror=null;this.src='{{ $fallbackAdminImg }}';"
+                                     @endif
                                      style="width:48px;height:48px;object-fit:cover;border-radius:8px;border:1px solid #e6dfd1;flex-shrink:0;">
                             @else
                                 <div style="width:48px;height:48px;border-radius:8px;background:#f4efe4;border:1px solid #e6dfd1;display:flex;align-items:center;justify-content:center;color:#9a8b70;font-size:0.75rem;flex-shrink:0;">
@@ -304,7 +310,7 @@ document.addEventListener('DOMContentLoaded', function () {
             form.reset();
 
             document.getElementById('menuNameInput').value = row.getAttribute('data-name') || '';
-            document.getElementById('menuCategoryInput').value = row.getAttribute('data-category') || 'Makanan Utama';
+            document.getElementById('menuCategoryInput').value = row.getAttribute('data-category') || 'Makanan';
             document.getElementById('menuPriceInput').value = row.getAttribute('data-price') || 0;
             document.getElementById('menuStockInput').value = row.getAttribute('data-stock') || 0;
             document.getElementById('menuDescInput').value = row.getAttribute('data-description') || '';

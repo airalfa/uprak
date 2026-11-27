@@ -37,7 +37,7 @@
                         <div class="contact-info-icon"><i class="fa-solid fa-phone"></i></div>
                         <div class="contact-info-label">Telepon</div>
                         <div class="contact-info-value">+62 21 1234 5678</div>
-                        <div class="contact-info-sub">(Senin - Jumat, 08.00 - 17.00)</div>
+                        <div class="contact-info-sub">(Setiap Hari, 08.00 - 22.00)</div>
                     </div>
 
                     <div class="contact-info-item">
@@ -203,7 +203,7 @@
                             <div class="contact-location-meta">
                                 <div class="contact-meta-box">
                                     <div class="contact-meta-title">Jam Operasional</div>
-                                    <div class="contact-meta-desc">Senin – Minggu<br>08.00 – 21.00 WIB</div>
+                                    <div class="contact-meta-desc">Setiap Hari<br>08.00 – 21.00 WIB</div>
                                 </div>
                                 <div class="contact-meta-box">
                                     <div class="contact-meta-title">Layanan Tersedia</div>
